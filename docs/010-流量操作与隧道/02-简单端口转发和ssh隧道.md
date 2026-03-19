@@ -36,7 +36,7 @@ vim /etc/rinetd.conf
 0.0.0.0 53 192.168.31.202 3389
 
 
-service rinetd restart # 使生效
+systemctl restart rinetd # 使生效
 ```
 
 #### Win
@@ -87,7 +87,7 @@ PasswordAuthentication yes
 PermitRootLogin yes
 Port 22改为53
 
-service ssh restart
+systemctl restart ssh
 ```
 
 ### 本地端口转发

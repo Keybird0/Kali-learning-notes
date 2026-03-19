@@ -3,6 +3,8 @@
 > Java编写的开源Web扫描器，跨平台支持（Linux、OS X、Windows），类似于 Paros Proxy、Fiddler、Skipfish 和 ZAProxy。
 >
 > 下载地址: [https://subgraph.com/vega/download/index.en.html](https://subgraph.com/vega/download/index.en.html)
+>
+> **注意**：Vega 已从 Kali Linux 工具列表中移除（因依赖已废弃的 libwebkitgtk-1.0-0），项目处于维护状态，建议优先考虑其他现代扫描工具。
 
 ## 0x01 主要功能
 

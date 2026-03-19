@@ -19,7 +19,36 @@
 > Metasploit的版本之一, 默认集成在Kali中
 
 + 使用postgresql数据库进行数据的存储.
-  > 早期版本需要先启动数据库再启动msf
+  > 早期版本需要先启动数据库再启动msf，现代 Kali 已自动配置
+
+```mermaid
+flowchart TB
+    subgraph 接口层
+        A1["msfconsole"] 
+        A2["msfcli（已废弃）"]
+        A3["Armitage / Cobalt Strike"]
+        A4["Web UI"]
+    end
+    subgraph 核心层
+        B1["MSF-Base"]
+        B2["MSF-Core"]
+        B3["REX 库"]
+    end
+    subgraph 模块层
+        C1["Exploits<br/>漏洞利用"]
+        C2["Payloads<br/>攻击载荷"]
+        C3["Auxiliary<br/>辅助模块"]
+        C4["Encoders<br/>编码器"]
+        C5["Post<br/>后渗透"]
+        C6["Nops<br/>空指令"]
+    end
+    A1 --> B1
+    A3 --> B1
+    A4 --> B1
+    B1 --> B2
+    B2 --> B3
+    B2 --> C1 & C2 & C3 & C4 & C5 & C6
+```
 
 ### 框架组件
 > 内容来自: https://parrotsec-china.org/t/metasploit/95

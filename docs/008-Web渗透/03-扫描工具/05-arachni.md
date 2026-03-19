@@ -1,5 +1,9 @@
 # arachni            
 > Arachni - A Web Application Security Scanner Framework
+>
+> 官网: [https://www.arachni-scanner.com](https://www.arachni-scanner.com) | 文档: [https://www.arachni-scanner.com/wiki](https://www.arachni-scanner.com/wiki)
+>
+> **注意**：Arachni 项目已由 Codename SCNR 接替，新项目推荐使用 [Codename SCNR](https://documentation.ecsypno.com/scnr/)。
 
 ## 0x01 使用
 
