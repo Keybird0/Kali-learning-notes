@@ -17,8 +17,7 @@
 
 ## 0x02 工具
 ### nmap
-```
-
+```bash
 nmap -v -p139,445 192.168.60.1-20
 
 nmap 192.168.60.4 -p139,445 --script=smb-os-discovery.nse
@@ -31,7 +30,7 @@ nmap -v 192.168.0.157 -p 139,445 --script=smb-vuln-ms08-067.nse --script-args=un
 ### nbtscan
 
 #### 特长: 在同一局域网内,即使跨网段, 也可能发现MAC地址.
-```
+```bash
 nbtscan -r 1.1.1.1
 
 nbtscan -v -s : 192.168.0.1/24
@@ -39,6 +38,6 @@ nbtscan -v -s : 192.168.0.1/24
 
 ### enum4linux
 
-```
+```bash
 enum4linux -a 192.168.60.10
 ```

@@ -147,6 +147,10 @@ nav:
       - 学习方向及资源引导: 018-练习/01-CTF/01-CTF学习指导.md
       - 流量取证专项: 018-练习/01-CTF/02-流量取证专项.md
     - 靶场:
+      - DVWA: 018-练习/02-靶场/01-DVWA.md
+      - SQLi-Labs: 018-练习/02-靶场/02-sqli_lab.md
+      - WeBug: 018-练习/02-靶场/03-webug.md
+      - Basic_Pentesting_1: 018-练习/02-靶场/04-Basic_Pentesting_1.md
       - Basic_Pentesting_2: 018-练习/02-靶场/05-Basic_Pentesting_2.md
       - 内网渗透学习: 018-练习/02-靶场/06-内网渗透学习.md
   - About:

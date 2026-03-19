@@ -11,7 +11,7 @@
 ## 0x01 snmp的配置
 
 windows 为例
-```
+```text
 运行 appwiz.cpl
 
 进入添加删除程序, 添加系统组件, 添加监控组件, 插入安装光盘, 安装组件.
@@ -33,7 +33,7 @@ snmp service及相关服务.
 ## 0x 检查查询工具
 ### onesixtyone
 
-```
+```bash
 onesixtyone 1.1.1.1 public
 
 onesixtyone -c dict.txt -i hosts -o my.log -w 100
@@ -44,12 +44,12 @@ snmpwalk -c public -v 2c 1.1.1.1 1.3.6.1.4.1.77.1.2.25
 
 ### snmpwalk 
 
-```
+```bash
 snmpwalk 192.168.20.199 -c public -v 2c
 ```
 
 ### snmp-check
 
-```
+```bash
 snmp-check  192.168.0.157
 ```

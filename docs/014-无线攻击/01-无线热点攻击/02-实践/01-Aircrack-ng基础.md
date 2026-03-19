@@ -1,8 +1,8 @@
 # AIRCRACK
 
 ## 0x01 简介
-+ 无线渗透和审计神器 
-+ 包含各种功能的工具套件
+- 无线渗透和审计神器 
+- 包含各种功能的工具套件
   - 网络检测
   - 嗅探抓包
   - 包注入
@@ -11,7 +11,7 @@
 ## 0x02 基础操作
 ###  检查可能的干扰项及消灭干扰项
 
-```
+```bash
 airmon-ng check
 airmon-ng check kill
 airmon-ng check
@@ -21,7 +21,7 @@ service network-manager stop
 
 ### 启动监听模式
 
-```
+```bash
 airmon-ng start wlan0 1 # 指定监听信道1
 
 iwconfig # 检查是否进入监听模式
@@ -31,7 +31,7 @@ airmon-ng stop wlan0mon #  关闭监听模式
 ![](../../../assets/009/20180301-2583c7b7.png)  
 
 ### 检查网卡支持的信道
-```
+```bash
 iwlist wlan0mon channel 
 
 回显:
@@ -55,21 +55,21 @@ wlan0mon  13 channels in total; available frequencies :
 
 ## 0x03 无线抓包(`airodump-ng`)
 ### 抓取
-+ 所有信道
+- 所有信道
 
-```
+```bash
 airodump-ng wlan0mon
 ```
 
-+ 指定并写入文件
+- 指定并写入文件
 
-```
+```bash
 airodump-ng wlan0mon -c 1 --bssid 00:06:F4:AA:3B:81 -w file.cap
 ```
 
-+ 指定并仅抓取特定包
+- 指定并仅抓取特定包
 
-```
+```bash
 airodump-ng wlan0mon -c 1 --bssid 00:06:F4:AA:3B:81 --ivs -w file.cap
 ```
 
@@ -94,23 +94,23 @@ airodump-ng wlan0mon -c 1 --bssid 00:06:F4:AA:3B:81 --ivs -w file.cap
   - Probe: STA探测的ESSID
 
 ### `airodump-ng` 排错
-  + 不显示任何AP和STA信息
+  - 不显示任何AP和STA信息
     - 物理机场景下使用笔记本内置无线网卡时，确保BIOS中已经启动无线网卡
     - 先确认无线网卡在managed模式下可以正常工作
     - 尝试禁用network-manager服务
     - 尝试卸载rmmod和重新加载modprobe驱动, 如:
 
-    ```
+    ```bash
     rmmod ath9k_htc
     modprobe ath9k_htc
     ```
-  + 工作一段时间后airodump-ng无法继续抓包
+  - 工作一段时间后airodump-ng无法继续抓包
     - airmon-ng check kill
     - 确认wpa_supplicant进程已停止
 
 ## 0x04 无线注入包(`aireplay-ng`)
 ### 说明
-+ 向无线网络中注入数据包,产生或者加速无线通信流量
+- 向无线网络中注入数据包,产生或者加速无线通信流量
   - 伪造身份验证
   - 强制重新身份验证
   - 抓包重放
@@ -130,12 +130,12 @@ airodump-ng wlan0mon -c 1 --bssid 00:06:F4:AA:3B:81 --ivs -w file.cap
       --migmode           : attacks WPA migration mode  (-8)
       --test              : tests injection and quality (-9)
 ```
-+ 获取包的两种途径 
+- 获取包的两种途径 
   1. 指定接口(-i) 
   2. 抓包文件pcap(-r)
 
 ### 命令选项
-```
+```text
 aireplay-ng <options> <replay interface>
 
 Filter options:
@@ -183,37 +183,37 @@ Replay options:
 ```
 
 ### AIREPLAY-NG包注入测试
-+ 检测网卡是否可以注入包
-+ 检测AP的响应时间
-+ 检测回包率(回包率反应链路质量)
-+ 如果有两个无线网卡，可以检测具体可以注入哪种攻击
-+ 基本测试检测AP对probe广播的响应
-+ 向每AP发30包(网卡成功发送并可接收包的能力)
-+ 可以多测几次,结果不是绝对的.
+- 检测网卡是否可以注入包
+- 检测AP的响应时间
+- 检测回包率(回包率反应链路质量)
+- 如果有两个无线网卡，可以检测具体可以注入哪种攻击
+- 基本测试检测AP对probe广播的响应
+- 向每AP发30包(网卡成功发送并可接收包的能力)
+- 可以多测几次,结果不是绝对的.
 
-```
+```bash
 aireplay-ng -9 wlan0mon
 或 
 aireplay-ng --test wlan0mon
 ```
 ##### 向隐藏AP/指定SSID注入
-```
+```bash
 arieplay-ng -9 -e ESSID -a EC:26:CA:FA:02:DC wlan2mon
 ```
 ##### card to card注入测试
 > 可以获得更详尽的注入测试数据
-> + -i作为AP的网卡
-> + Attack -5/-7:        Failed (注入MAC和真正MAC相同时或可以正常使用) 
-```
+> - -i作为AP的网卡
+> - Attack -5/-7:        Failed (注入MAC和真正MAC相同时或可以正常使用) 
+```bash
 aireplay-ng -9 -i wlan0mon wlan1mon
 ```
 
 ### `aireplay-ng` 排错
-+ Aireplay-ng命令挂起没有任何输出
+- Aireplay-ng命令挂起没有任何输出
   >  无线网卡与AP工作在不同信道
-+ 报错"write failed: Cannot allocate memory wi_write():illegal seek"
+- 报错"write failed: Cannot allocate memory wi_write():illegal seek"
   > 无线网卡使用Broadcom芯片（bcm43xx),替换为b43驱动可解决
-+ 可注入但速度很慢，并提示内核消息"rtc:lost some interrupts at 1024Hz" 
+- 可注入但速度很慢，并提示内核消息"rtc:lost some interrupts at 1024Hz" 
   > 没有修正方法，此时可以启动多个aireplay-ng命令提高速度
-+ 使用-h参数指定注入MAC地址与网卡MAC地址不一致报错
+- 使用-h参数指定注入MAC地址与网卡MAC地址不一致报错
   > 建议保持一致, 可以先使用`macchange `更改mac, 如`macchange -m 00:11:11:11:11:11 wlan2mon`

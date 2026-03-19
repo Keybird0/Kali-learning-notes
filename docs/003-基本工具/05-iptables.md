@@ -282,7 +282,7 @@ RETURN：返回
 将默认策略改成DROP:
 
 
-```
+```bash
 iptables -P INPUT DROP
 
 iptables -P OUTPUT DROP
@@ -316,14 +316,14 @@ INVALID
 
 改写INPUT
 
-```
+```bash
 iptables -R INPUT 2 -s 172.16.0.0/16 -d 172.16.100.1 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
 
 iptables -R OUTPUT 1 -m state --state ESTABLISHED -j ACCEPT
 ```
 此时如果想再放行一个80端口如何放行呢？
 
-```
+```bash
 iptables -A INPUT -d 172.16.100.1 -p tcp --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
 
 iptables -R INPUT 1 -d 172.16.100.1 -p udp --dport 53 -j ACCEPT
@@ -340,7 +340,7 @@ iptables -R INPUT 1 -d 172.16.100.1 -p udp --dport 53 -j ACCEPT
 
 小扩展：对于127.0.0.1比较特殊，我们需要明确定义它
 
-```
+```bash
 iptables -A INPUT -s 127.0.0.1 -d 127.0.0.1 -j ACCEPT
 
 iptables -A OUTPUT -s 127.0.0.1 -d 127.0.0.1 -j ACCEPT

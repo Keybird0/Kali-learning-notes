@@ -67,7 +67,7 @@ nslookup -q=any sina.com (-q 是type的替换)
 
 可以看到www.sina.com并没有被直接解析为一个特定的IP地址，所以www.sina.com不是一个A记录，而是一个C name记录，转而被继续解析成us.sina.com.cn，一直解析知道主机记录。
 
-```
+```text
 > set type=any
 > sina.com
 
@@ -98,7 +98,7 @@ sina.com    mail exchanger = 5 freemx1.sinamail.sina.com.cn.
 
 ### dig
 dig(Domain Information Groper),可以实现nslookup所有的功能,并且比其更强大更方便.
-```
+```bash
 root@test:~# dig sina.com
 
 ; <<>> DiG 9.11.2-P1-1-Debian <<>> sina.com
@@ -138,7 +138,7 @@ ns4.sina.com.		51459	IN	A	123.125.29.99
 ```
 输出的信息很详细.
 使用参数:
-```
+```bash
 查询163邮箱的邮件服务器A记录
 root@test:~# dig   +noall +answer A mail.163.com
 mail.163.com.		81	IN	CNAME	mail163.ntes53.netease.com.
@@ -147,7 +147,7 @@ mail163.ntes53.netease.com. 108	IN	A	220.181.12.208
 mail163.ntes53.netease.com. 108	IN	A	220.181.12.209
 ```
 输出结果过滤显示:
-```
+```bash
 root@test:~# dig   +noall +answer A mail.163.com | awk '{print $5}'
 mail163.ntes53.netease.com.
 220.181.12.207
@@ -155,7 +155,7 @@ mail163.ntes53.netease.com.
 220.181.12.209
 ```
 反向域名解析(PTR记录),使用-x参数
-```
+```bash
 root@test:~# dig -x 220.181.14.155 +noall +answer
 
 ; <<>> DiG 9.11.2-P1-1-Debian <<>> -x 220.181.14.155 +noall +answer
@@ -164,7 +164,7 @@ root@test:~# dig -x 220.181.14.155 +noall +answer
 ```
 **查询DNS bind的版本信息**
 大部分的DNS服务器均采用BIND,查询bind的版本信息,有助于直接入侵DNS服务器,或许所有fqdn记录.但不是所有DNS服务器可以查询BIND信息,绝大多数dns服务器都设置了保护模式,无法通过此方式查询.
-```
+```bash
 root@test:~# dig +noall +answer sina.com ns
 返回:
 sina.com.		50204	IN	NS	ns3.sina.com.cn.
@@ -176,7 +176,7 @@ sina.com.		50204	IN	NS	ns4.sina.com.
 sina.com.		50204	IN	NS	ns4.sina.com.cn.
 sina.com.		50204	IN	NS	ns2.sina.com.cn.
 ```
-```
+```bash
 root@test:~# dig +noall +answer txt chaos VERSION.BIND ns3.sina.com.cn.
 ;; connection timed out; no servers could be reached
 ;; connection timed out; no servers could be reached
@@ -184,7 +184,7 @@ root@test:~# dig +noall +answer txt chaos VERSION.BIND ns3.sina.com.cn.
 出不来也是很正常的,也有可能显示version为0也是无法查询.
 
 dns查询追踪,并且指定nameserver为谷歌的域名服务器
-```
+```bash
 root@test:~# dig +trace baidu.com
 返回:
 ;; Warning: Message parser reports malformed message packet.
@@ -219,7 +219,7 @@ baidu.com.		41540	IN	NS	ns7.baidu.com.
 
 
 使用不同dns服务器进行查询(查询结果可能会有所不同)
-```
+```bash
 root@test:~# dig 163.com any 
 返回:
 ;; Connection to 10.211.55.1#53(10.211.55.1) for 163.com failed: connection refused.
@@ -268,9 +268,9 @@ root@test:~# dig 163.com any @8.8.8.8
 > 区域传送简单理解其实把一个域名服务器的所有信息同步到另一个域名服务器.一般只允许同一域的服务器进行同步,如果配置错误,就可能造成所有域名服务器可同步过去,导致泄露DNS服务器的所有信息.
  
 ### 检测
-+ 使用dig
+- 使用dig
 
-```
+```bash
 root@test:~# dig @ns4.sina.com sina.com axfr
 
 ; <<>> DiG 9.11.2-P1-1-Debian <<>> @ns4.sina.com sina.com axfr
@@ -279,9 +279,9 @@ root@test:~# dig @ns4.sina.com sina.com axfr
 ; Transfer failed.
 ```
 
-+ 使用host
+- 使用host
 
-```
+```bash
 root@test:~# host -T -l sina.com ns4.sina.com
 Using domain server:
 Name: ns4.sina.com
@@ -301,7 +301,7 @@ host的其它用法可以`man host`或`info host`
 
 ####  使用fierce
 
-```
+```bash
 fierce -dnsserver 8.8.8.8 -dns sina.com -wordlist /usr/share/fierce/hosts.txt
 DNS Servers for sina.com:
 	ns1.sina.com.cn
@@ -326,7 +326,7 @@ Now performing 2280 test(s)...
  #### 使用dnsdict6(最新版没有集成,需要自己安装)
 下载地址:[http://www.thc.org/releases/thc-ipv6-2.7.tar.gz](http://www.thc.org/releases/thc-ipv6-2.7.tar.gz)
 
-```
+```bash
 tar xf 压缩包
 cd 解压目录
 安装依赖:
@@ -336,7 +336,7 @@ make && make install
 ```
 
 使用帮助
-```
+```text
 root@test:~# dnsdict6 -h
 dnsdict6 v2.7 (c) 2014 by van Hauser / THC <vh@thc.org> www.thc.org
 
@@ -363,7 +363,7 @@ dnsdict6 -4 -d -t 16 -e -x sina.com
 
 使用帮助
 
-```
+```text
 dnsenum -h
 dnsenum VERSION:1.2.4
 Usage: dnsenum [Options] <domain> 
@@ -407,7 +407,7 @@ OUTPUT OPTIONS:
 
 使用举例
 
-```
+```bash
 dnsenum -f /usr/share/dnsenum/dns.txt -dnsserver 8.8.8.8 sina.com -o sina.xml
 ```
 
@@ -415,7 +415,7 @@ dnsenum -f /usr/share/dnsenum/dns.txt -dnsserver 8.8.8.8 sina.com -o sina.xml
 
 使用帮助
 
-```
+```text
 root@test:~# dnsmap
 dnsmap 0.30 - DNS Network Mapper by pagvac (gnucitizen.org)
 
@@ -435,7 +435,7 @@ dnsmap target-fomain.foo -r ./domainbf_results.txt
 ```
 用例
 
-```
+```bash
 dnsmap  -w wordlist.txt sina.com
 ```
 
@@ -443,7 +443,7 @@ dnsmap  -w wordlist.txt sina.com
 
 使用帮助
 
-```
+```text
 root@test:~# dnsrecon 
 Version: 0.8.11
 Usage: dnsrecon.py <options>
@@ -487,7 +487,7 @@ Options:
 ```
 用例
 
-```
+```bash
 dnsrecon -d sina.com --lifetime 10 -t brt -D usr/share/dnsrecon/namelist.txt -x sina.xml
 ```
 

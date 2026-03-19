@@ -10,26 +10,26 @@
 
 环境设置简单描述:
 
-+ 防火墙规则
+- 防火墙规则
 > 只允许通过53端口
 
 WAN的规则可以去掉, LAN的规则可以如下图.
 
 ![](../assets/012/20180506-6de91926.png)
 
-+ 内网Win选择设定内网网卡, DHCP即可
-+ 外网Kali选择桥接网卡, DHCP即可
+- 内网Win选择设定内网网卡, DHCP即可
+- 外网Kali选择桥接网卡, DHCP即可
 
 ### 实践
 
 #### Kali
 > 主机ip: 192.168.31.33
 
-```
+```bash
 apt install rinetd
 ```
 
-```
+```bash
 vim /etc/rinetd.conf
 添加类似内容, 监听所有发到53端口的流量, 转发到192.168.31.33 的3389端口
 # bindadress    bindport  connectaddress  connectport
@@ -41,7 +41,7 @@ systemctl restart rinetd # 使生效
 
 #### Win
 
-```
+```text
 远程桌面连接
 192.168.31.33:53
 
@@ -80,7 +80,7 @@ systemctl restart rinetd # 使生效
 > 如果需要root登录, 可以按如下修改
 
 ##### Kali(设ip为192.168.31.33)等
-```
+```bash
 vim /etc/ssh/sshd_config
 
 PasswordAuthentication yes
@@ -94,7 +94,7 @@ systemctl restart ssh
 > 效果类似于rinetd, 将本地端口于远程服务器建立隧道.
 
 内网有ssh客户端的系统(设ip为192.168.1.102)执行
-```
+```bash
 ssh -fCNg -L <listen port>:<remote ip>:<remote port> user@<ssh server> -p <ssh server port>
 
 参数说明:
@@ -123,7 +123,7 @@ rdesktop localhost:8888
 
 内网中有ssh客户端的系统执行
 
-```
+```bash
 ssh -fCN -R <listen port>:<remote ip>:<remote port> user@<SSH server> -p <ssh server port>
 
 参数:
@@ -147,7 +147,7 @@ localhost:8888相当于访问192.168.1.102:22
 
 在内网ssh客户端执行
 
-```
+```bash
 ssh -CfNg -D [bind_address:]port user@<SSH server> -p <ssh server port>
 
 参数:
@@ -162,7 +162,7 @@ ssh -CfNg -D 127.0.0.1:1080 root@192.168.31.33 -p 53
 ### 图形化的X协议代理转发
 > 允许远程登录执行GUI程序, 所有流量通过隧道绕过防火墙
 
-```
+```bash
 ssh -X user@<SSH server> -p
 <ssh server port>
 
@@ -175,7 +175,7 @@ ssh -X user@<SSH server> -p
 
 ![](../assets/012/markdown-img-paste-20180506165053795.png)
 
-```
+```bash
 apt install autossh
 
 如把本地的 80 端口映射到服务器上的 8080 端口, 当然这里是要先设置好公钥认证的.

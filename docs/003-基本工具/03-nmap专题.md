@@ -2,7 +2,7 @@
 
 ## 0x01 帮助
 
-```
+```text
 Usage: nmap [Scan Type(s)] [Options] {target specification}
 TARGET SPECIFICATION:
   Can pass hostnames, IP addresses, networks, etc.
@@ -121,7 +121,7 @@ EXAMPLES:
 ## 0x02 注明
 ### 设定目标
 
-```
+```bash
 Ex: scanme.nmap.org, microsoft.com/24, 192.168.0.1; 10.0.0.1-254
 
 -iL <inputfilename>: Input from list of hosts/networks
@@ -136,7 +136,7 @@ Ex: scanme.nmap.org, microsoft.com/24, 192.168.0.1; 10.0.0.1-254
 ```
 ### 主机发现
 
-```
+```bash
 #不扫描, 只列出目标(可以计算子网掩码目标)
 -sL: List Scan - simply list targets to scan 
 
@@ -163,7 +163,7 @@ Ex: scanme.nmap.org, microsoft.com/24, 192.168.0.1; 10.0.0.1-254
 
 ### 扫描技术
 
-```
+```bash
 # 选择探测协议
 -sS/sT/sA/sW/sM: TCP SYN/Connect()/ACK/Window/Maimon scans
 -sU: UDP Scan
@@ -180,7 +180,7 @@ Ex: scanme.nmap.org, microsoft.com/24, 192.168.0.1; 10.0.0.1-254
 
 ### 端口发现
 
-```
+```bash
 -p <port ranges>: Only scan specified ports
   Ex: -p22; -p1-65535; -p U:53,111,137,T:21-25,80,139,8080,S:9
 
@@ -200,7 +200,7 @@ Ex: scanme.nmap.org, microsoft.com/24, 192.168.0.1; 10.0.0.1-254
 
 ### 服务探测
 
-```
+```bash
 -sV: Probe open ports to determine service/version info
 
 # 设置探测详尽程度
@@ -216,7 +216,7 @@ Ex: scanme.nmap.org, microsoft.com/24, 192.168.0.1; 10.0.0.1-254
 ### 脚本使用
 > 脚本位置: `/usr/share/nmap/script` 
 
-```
+```bash
 -sC: equivalent to --script=default
 
 --script=<Lua scripts>: <Lua scripts> is a comma separated list of
@@ -236,7 +236,7 @@ Ex: scanme.nmap.org, microsoft.com/24, 192.168.0.1; 10.0.0.1-254
 
 ### 系统探测
 
-```
+```bash
 -O: Enable OS detection
 
 --osscan-limit: Limit OS detection to promising targets
@@ -246,7 +246,7 @@ Ex: scanme.nmap.org, microsoft.com/24, 192.168.0.1; 10.0.0.1-254
 
 ### 探测限制
 
-```
+```bash
 's' (seconds), 'm' (minutes), or 'h' (hours) to the value (e.g. 30m).
 
 -T<0-5>: Set timing template (higher is faster)
@@ -273,7 +273,7 @@ Ex: scanme.nmap.org, microsoft.com/24, 192.168.0.1; 10.0.0.1-254
 
 ### 过滤绕过
 
-```
+```bash
 -f; --mtu <val>: fragment packets (optionally w/given MTU)
 
 # 伪造多个源地址, 迷惑管理员
@@ -309,7 +309,7 @@ Ex: scanme.nmap.org, microsoft.com/24, 192.168.0.1; 10.0.0.1-254
 
 ### 输出
 
-```
+```bash
 # 输出文件
 -oN/-oX/-oS/-oG <file>: Output scan in normal, XML, s|<rIpt kIddi3,
    and Grepable format, respectively, to the given filename.
@@ -340,7 +340,7 @@ Ex: scanme.nmap.org, microsoft.com/24, 192.168.0.1; 10.0.0.1-254
 
 ### 杂
 
-```
+```bash
 -6: Enable IPv6 scanning
 
 # 一键探测 

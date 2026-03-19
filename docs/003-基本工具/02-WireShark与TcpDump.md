@@ -10,7 +10,7 @@
   安全专家必备技能
   抓包引擎
 
-```
+```text
 Libpcap9-----Linux
 Winpcap10-----Windows
 ```
@@ -46,7 +46,7 @@ WIRESHARK-----筛选器
 
 处理流程
 
-```
+```text
       Display Filters
             ↑
       Capture Engine
@@ -72,7 +72,7 @@ WIRESHARK-常见协议包可以显示出分层结构
 
 例:arp
 
-```
+```text
  第一层包的相关信息。多少帧，大小，传输时间等统计信息
  第二层数据包的内容字段。首先是目标地址，源地址。上层协议类型。  占位地段
  第三arp包头。 硬件地址类型1表示以太网    协议类型ip解析成arp地址  硬件地址长度   ip地址4字节32位   操作代码  arp包头内容包含发送端的mac和ip目标端的mac和ip
@@ -81,7 +81,7 @@ WIRESHARK-常见协议包可以显示出分层结构
 
 例：ssdp
 
-```
+```text
  第一层汇总信息
  第二层二层包头 目标地址，源地址   上一层协议是ip协议
  第三层。ip版本号  头长度  dsf  total长度（ip头到数据字段）   identification:0*7b52(31570)=大文件传输时会分割成小块，这是标记号段接收端
@@ -116,19 +116,19 @@ wireshark官网有供学习的例子文件
 
 
 统计功能位于`statistics菜单`下
-  + summary数据包的摘要信息
-  + endpoints查看数据包列表里一共有多少ip地址通信  ethernet 2 二层包头  可以排序可看哪个ip大量发送接收包大量小包可以造成网络性能弱化
-  + protocol hierarchy查看什么类型的协议包占比
-  + packet lengths  按包的长度查看流量
-  + conversations 查看通讯 的机器之间流量
-  + 码类型按端口区分协议
+  - summary数据包的摘要信息
+  - endpoints查看数据包列表里一共有多少ip地址通信  ethernet 2 二层包头  可以排序可看哪个ip大量发送接收包大量小包可以造成网络性能弱化
+  - protocol hierarchy查看什么类型的协议包占比
+  - packet lengths  按包的长度查看流量
+  - conversations 查看通讯 的机器之间流量
+  - 码类型按端口区分协议
 
 `Analyze菜单`下expert info专家信息可以给出当前网络出现的信息
 
 
 `实践`
 
-```
+```bash
 抓包对比nc ncat加密与不加密的流量
 WireShark样例包下载地址：
 https://wiki.wireshark.org/SampleCaptures
@@ -136,10 +136,10 @@ https://wiki.wireshark.org/SampleCaptures
 
 <br>
 **一些使用事项**  
-+ dhclinent eth0   强制重新获取dhcp ip地址  
-+ wireshark对大流量数据分析有所欠缺  
-+ 企业抓包布置方案 sniffer     cace/riverbed---基于wireshark开发  
-+ 已有自动抓包分析告警的商业软件
+- dhclinent eth0   强制重新获取dhcp ip地址  
+- wireshark对大流量数据分析有所欠缺  
+- 企业抓包布置方案 sniffer     cace/riverbed---基于wireshark开发  
+- 已有自动抓包分析告警的商业软件
 
 
 
@@ -211,7 +211,7 @@ https://wiki.wireshark.org/SampleCaptures
 
 </br>
 使用帮助
-```
+```text
     root:～# tcpdump -h
     tcpdump version 4.3.0
     libpcap version 1.3.0
@@ -225,7 +225,7 @@ https://wiki.wireshark.org/SampleCaptures
 
 - 抓包
 
-```
+```bash
 root:～# tcpdump -i eth0 -s 0 -w a.cap     //监听网络接口字节为0保存到a.cap文件中
 tcpdump: listening on eth0, link-type EN10MB(Ethernet), capture size 65535 bytes
 ^C15 packets captured
@@ -244,7 +244,7 @@ root:～# tcpdump -i eth0 tcp port 22
 - 读包
 
 
-```
+```bash
   tcpdump -n -r http.cap | awk '{print $3}'| sort -u
   tcpdump -n src host 145.254.160.237 -r http.cap
   tcpdump -n dst host 145.254.160.237 -r http.cap
@@ -301,9 +301,9 @@ reading from file http.cap, link type En10MB(Ethernet)
 
 TCPDUMP------高级筛选
 
+```bash
   tcpdump -A -n 'tcp[13]=24' -r http.cap
+```
 
 说明：
   00011000b = 24 in decimal
-
-```

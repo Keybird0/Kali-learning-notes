@@ -1,34 +1,34 @@
 # HTTPS攻击
 
 ## 0x01 HTTPS简介
-+ 为实现CIA (保密性, 完整性, 可用性)
-+ 解决的是信息传输过程中数据被篡改,窃听
-+ 加密通过,密钥交换算法,对称加密,非对称加密,单向加密(HASH)手段
+- 为实现CIA (保密性, 完整性, 可用性)
+- 解决的是信息传输过程中数据被篡改,窃听
+- 加密通过,密钥交换算法,对称加密,非对称加密,单向加密(HASH)手段
 
 ## 0x02 HTTPS攻击方法
-+ 降级攻击
-+ 解密攻击(明文, 证书伪造)
-+ 协议漏洞, 实现方法的漏洞, 配置不严格
+- 降级攻击
+- 解密攻击(明文, 证书伪造)
+- 协议漏洞, 实现方法的漏洞, 配置不严格
 
 ## 0x03 知识铺垫
 ### 安全套接层(Secure socket layer)
-+ 保证网络通信安全的加密协议
-+ 1994年由Netscape开发成为统一标准
-+ 1999年TLS(Transport layer security)取代SSL v3
-+ 近年来发现的ssl协议漏洞使业界认为其漏洞已不可软件修复.主要的严重漏洞
-+ - Heartbleed
-+ - POODLE
-+ - BEAST
-+ TLS最新版本为1.2
-+ 由发展历史等关系, TLS/SSL, HTTPS, HTTP over SSL 一般表示相同含义
+- 保证网络通信安全的加密协议
+- 1994年由Netscape开发成为统一标准
+- 1999年TLS(Transport layer security)取代SSL v3
+- 近年来发现的ssl协议漏洞使业界认为其漏洞已不可软件修复.主要的严重漏洞
+- - Heartbleed
+- - POODLE
+- - BEAST
+- TLS最新版本为1.2
+- 由发展历史等关系, TLS/SSL, HTTPS, HTTP over SSL 一般表示相同含义
 
  ### SSL/TLS其它应用场景
  > SSL/TLS 用于HTTP, 称为HTTPS
- + 邮件传输(服务器间, 客户端与服务器间)
- + 数据库服务器间
- + LDAP身份认证服务器间
- + SSL VPN
- + DRP通信过程的加密和身份认证
+ - 邮件传输(服务器间, 客户端与服务器间)
+ - 数据库服务器间
+ - LDAP身份认证服务器间
+ - SSL VPN
+ - DRP通信过程的加密和身份认证
 
  ### 加密过程
 1. 握手
@@ -47,21 +47,21 @@
 
 ### 常用的加密方法
 #### 非对称加密算法(用于key exchange)
-+ Diffie-Hellman
-+ Rivest Shamir Adleman (RSA)
-+ Elliptic Curve Cryptography (ECC)
+- Diffie-Hellman
+- Rivest Shamir Adleman (RSA)
+- Elliptic Curve Cryptography (ECC)
 
 
 #### 对称加密算法(用于加密数据)
-+ Data Encryption Standard (DES) / 3DES
-+ Advance Encryption Standard (AES)
-+ nternational Data Encryption Algorithm (IDEA)
-+ Rivest Cipher 4 (RC4) (应用场景举例: WEP, TLS/SSL, RDP, Secure Shell)
+- Data Encryption Standard (DES) / 3DES
+- Advance Encryption Standard (AES)
+- nternational Data Encryption Algorithm (IDEA)
+- Rivest Cipher 4 (RC4) (应用场景举例: WEP, TLS/SSL, RDP, Secure Shell)
 
 #### Hash算法(用于校验)
-+ MD5
-+ SHA-1
-+ SHA-2 (TLS 1.2唯一支持)
+- MD5
+- SHA-1
+- SHA-2 (TLS 1.2唯一支持)
 
 ### SSL的弱点
 - ssl是不同的对称, 非对称, 单项加密算法的组合加密实现(cipher suite)
@@ -71,38 +71,38 @@
 
 
 ## 0x04 HTTPS弱点扫描
-+ `openssl`
+- `openssl`
 
-```
+```bash
 openssl s_client connect www.baidu.com:443
 
 检查支持的不安全的cipher
 openssl s_client -tls1_2 -cipher 'NULL,EXPORT,LOW,DES' -connect www.baidu.com:443
 ```
 
-+ `sslscan`
+- `sslscan`
 > 自动识别ssl配置错误, 过期协议, 过时的cipher suite, 默认检查crime, heartbleed漏洞, 绿色表示安全, 红色,黄色需引起注意
 
 
-```
+```bash
 sslscan --tlsall www.baidu.com:443
 
 分析证书详细信息
 sslscan --show-certificate --no-ciphersuites www.baidu.com
 ```
 
-+ `sslyze`
+- `sslyze`
 > 检查ssl过时版本, 检查存在弱点的cipher suite, 扫描多站点时,支持读自文件,检查是否支持回话恢复
 
 
-```
+```bash
 sslyze --regular www.baidu.com:443
 ```
 
-+ `nmap`
-```
+- `nmap`
+```bash
 nmap --script=ssl-enum-ciphers.nse www.baidu.com
 ```
 
-+ 在线查询
+- 在线查询
 https://www.ssllabs.com/ssltest
