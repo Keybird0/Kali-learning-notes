@@ -1,4 +1,41 @@
-# Kali-learning-notes
-Write down some kali learning notes
+# Kali Linux 渗透测试学习笔记
 
-More contents can click wiki or open http://keybird.cn （deprecated）
+Kali Linux 渗透测试学习笔记，基于安全牛苑房弘老师的 [Kali Linux 渗透测试课程](https://edu.aqniu.com/course/83) 整理。
+
+## 在线阅读
+
+**[https://keybird0.github.io/Kali-learning-notes/](https://keybird0.github.io/Kali-learning-notes/)**
+
+## 目录概览
+
+| 章节 | 内容 |
+|------|------|
+| 前言 | 笔记介绍、法律法规 |
+| 系统安装及环境部署 | Kali 安装、实验环境搭建 |
+| 基本工具 | NC、WireShark、nmap、scapy、iptables |
+| 信息收集 | 被动信息收集、主动信息收集 |
+| 弱点扫描 | 扫描概念与工具（Nessus、Nexpose等） |
+| 缓冲区溢出 | Windows/Linux 溢出实例 |
+| Web渗透 | 扫描工具、手动漏洞挖掘、WebShell |
+| 密码破解 | 认证、爆破、中间人攻击 |
+| 流量操作与隧道 | 端口转发、SSH隧道 |
+| 免杀 | 杀毒原理与免杀实践 |
+| 提权 | 用户提权、漏洞提权、配置提权 |
+| Metasploit | 基本使用、后渗透、社会工程学 |
+| 无线攻击 | WEP/WPA/WPS 攻击 |
+| 拒绝服务 | DoS 攻击原理与工具 |
+| 取证 | 计算机取证、流量取证 |
+| 练习 | CTF、靶场实战 |
+
+## 本地构建
+
+```bash
+pip install -r requirements.txt
+mkdocs serve
+```
+
+访问 `http://127.0.0.1:8000` 预览。
+
+## License
+
+[GNU General Public License v3.0](LICENSE)

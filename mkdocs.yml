@@ -1,0 +1,208 @@
+# Project Information
+site_name: KeyBird-Security-Learning-Notes
+site_description: Kali Linux 渗透测试学习笔记
+site_author: KeyBird
+site_url: https://keybird0.github.io/Kali-learning-notes/
+
+# Repository
+repo_name: 'Keybird0/Kali-learning-notes'
+repo_url: 'https://github.com/Keybird0/Kali-learning-notes'
+
+# Copyright
+copyright: 'Copyright &copy; 2017-2026 KeyBird'
+
+# Contents
+nav:
+  - 前言:
+    - 笔记介绍: index.md
+    - 法律法规: 000-前言/00-法律法规.md
+  - 系统安装及环境部署:
+    - 渗透测试及Kali简介: 001-Pentest介绍及Kali安装/01-渗透测试及Kali简介.md
+    - 系统安装:
+      - Kali安装: 001-Pentest介绍及Kali安装/02-Kali安装.md
+      - 熟悉Kali环境: 001-Pentest介绍及Kali安装/03-熟悉Kali环境.md
+      - Kali环境优化配置: 001-Pentest介绍及Kali安装/04-Kali环境优化配置.md
+    - 环境部署:
+      - 实验环境介绍: 002-实验环境/01-实验环境介绍.md
+      - 虚拟机安装靶机: 002-实验环境/02-虚拟机安装靶机.md
+      - 模拟网络拓扑: 002-实验环境/03-模拟网络拓扑.md
+  - 基本工具的使用:
+    - NC与NETCAT: 003-基本工具/01-NC与NETCAT.md
+    - WireShark与TcpDump: 003-基本工具/02-WireShark与TcpDump.md
+    - nmap: 003-基本工具/03-nmap专题.md
+    - scapy: 003-基本工具/04-scapy专题.md
+    - iptables: 003-基本工具/05-iptables.md
+    - 其它: 003-基本工具/06-其它基础工具.md
+  - 信息收集:
+    - 被动信息收集:
+      - 信息收集内容和用途: 004-被动信息收集/01-信息收集内容和用途.md
+      - 信息收集之DNS: 004-被动信息收集/02-信息收集之DNS.md
+      - 信息收集之Whois: 004-被动信息收集/03-信息收集之Whois.md
+      - 信息收集之搜索引擎: 004-被动信息收集/04-信息收集之搜索引擎.md
+      - 使用搜索分析工具: 004-被动信息收集/05-使用搜索分析工具.md
+      - 正常交互收集信息: 004-被动信息收集/06-正常交互收集信息.md
+      - 其它途径及利用: 004-被动信息收集/07-其它途径及利用.md
+    - 主动信息收集:
+      - 主动信息收集简介: 005-主动信息收集/01-主动信息收集简介.md
+      - 主机发现: 005-主动信息收集/02-主机发现.md
+      - 端口扫描: 005-主动信息收集/03-端口扫描.md
+      - 服务扫描: 005-主动信息收集/04-服务扫描.md
+      - 操作系统识别: 005-主动信息收集/05-操作系统识别.md
+      - snmp扫描: 005-主动信息收集/06-snmp扫描.md
+      - SMB扫描: 005-主动信息收集/07-SMB扫描.md
+      - SMTP扫描: 005-主动信息收集/08-SMTP扫描.md
+      - 防护识别: 005-主动信息收集/09-防护识别.md
+  - 弱点扫描:
+    - 简介及概念: 006-弱点扫描/01-简介及概念.md
+    - 扫描发现工具: 006-弱点扫描/02-扫描发现工具.md
+  - 缓冲区溢出:
+    - 简介: 007-缓冲区溢出/01-简介.md
+    - Windows程序实例: 007-缓冲区溢出/02-Windows程序实例.md
+    - Linux程序实例: 007-缓冲区溢出/03-Linux程序实例.md
+  - Web渗透:
+    - 基础知识:
+      - web渗透简介及基础知识: 008-Web渗透/01-基础知识/01-web渗透简介及基础知识.md
+      - 一些概念: 008-Web渗透/01-基础知识/02-一些概念.md
+    - 侦查工具:
+      - Httrack: 008-Web渗透/02-侦查工具/01-Httrack.md
+    - 扫描工具:
+      - Nikto: 008-Web渗透/03-扫描工具/01-Nikto.md
+      - Vega: 008-Web渗透/03-扫描工具/02-Vega.md
+      - Skipfish: 008-Web渗透/03-扫描工具/03-Skipfish.md
+      - w3af: 008-Web渗透/03-扫描工具/04-w3af.md
+      - arachni: 008-Web渗透/03-扫描工具/05-arachni.md
+      - owasp-Zap: 008-Web渗透/03-扫描工具/06-owasp-Zap.md
+      - SQLMAP: 008-Web渗透/03-扫描工具/07-SQLMAP.md
+      - Burpsuite: 008-Web渗透/03-扫描工具/08-Burpsuite.md
+      - Acunetix: 008-Web渗透/03-扫描工具/09-Acunetix.md
+      - AppScan: 008-Web渗透/03-扫描工具/10-AppScan.md
+    - 手动漏洞挖掘:
+      - 手动漏洞挖掘简介: 008-Web渗透/04-手动漏洞挖掘/01-手动漏洞挖掘简介.md
+      - 默认配置检查: 008-Web渗透/04-手动漏洞挖掘/02-默认配置检查.md
+      - 登录探测: 008-Web渗透/04-手动漏洞挖掘/03-登录探测.md
+      - 命令执行检查: 008-Web渗透/04-手动漏洞挖掘/04-命令执行检查.md
+      - 内容泄露: 008-Web渗透/04-手动漏洞挖掘/05-内容泄露.md
+      - 文件上传: 008-Web渗透/04-手动漏洞挖掘/06-文件上传.md
+      - SQL注入: 008-Web渗透/04-手动漏洞挖掘/07-SQL注入.md
+      - XSS: 008-Web渗透/04-手动漏洞挖掘/08-XSS.md
+      - CSRF: 008-Web渗透/04-手动漏洞挖掘/09-CSRF.md
+    - 其它:
+      - WebShell: 008-Web渗透/05-其它/01-WebShell.md
+      - HTTPS攻击: 008-Web渗透/05-其它/02-HTTPS攻击.md
+      - SSL中间人攻击: 008-Web渗透/05-其它/03-SSL中间人攻击及ddos.md
+  - 密码破解:
+    - 认证简介: 009-密码破解/01-认证简介.md
+    - 爆破: 009-密码破解/02-爆破.md
+    - 中间人攻击: 009-密码破解/03-中间人攻击.md
+    - 密文登录: 009-密码破解/04-密文登录.md
+  - 流量操作与隧道:
+    - 流量操作简介: 010-流量操作与隧道/01-流量操作简介.md
+    - 简单端口转发和ssh隧道: 010-流量操作与隧道/02-简单端口转发和ssh隧道.md
+  - 免杀:
+    - 杀毒及免杀原理: 011-免杀/01-杀毒及免杀原理.md
+    - 免杀实践: 011-免杀/02-免杀实践.md
+    - 病毒投放扩充: 011-免杀/03-病毒投放扩充.md
+  - 提权:
+    - 用户提权: 012-提权/01-用户提权.md
+    - 密码获取: 012-提权/02-密码获取.md
+    - 利用漏洞提权: 012-提权/03-利用漏洞提权.md
+    - 利用不当配置提权: 012-提权/04-利用不当配置提权.md
+  - Metasploit:
+    - Metasploit简介: 013-Metasploit/01-Metasploit简介.md
+    - 基本使用: 013-Metasploit/02-基本使用.md
+    - 信息收集: 013-Metasploit/03-信息收集.md
+    - 弱点发现: 013-Metasploit/04-弱点发现.md
+    - 客户端渗透: 013-Metasploit/05-客户端渗透.md
+    - 后渗透测试利用: 013-Metasploit/06-后渗透测试利用.md
+    - Armitage图形前端: 013-Metasploit/07-Armitage图形前端.md
+    - 社会工程学: 013-Metasploit/08-社会工程学.md
+  - 无线攻击:
+    - 无线热点攻击:
+      - 理论:
+        - 基础知识: 014-无线攻击/01-无线热点攻击/01-理论/01-基础知识.md
+        - WEP攻击基础: 014-无线攻击/01-无线热点攻击/01-理论/03-WEP攻击基础.md
+      - 实践:
+        - Aircrack-ng基础: 014-无线攻击/01-无线热点攻击/02-实践/01-Aircrack-ng基础.md
+        - MAC绑定绕过: 014-无线攻击/01-无线热点攻击/02-实践/02-MAC绑定绕过.md
+        - WEP攻击: 014-无线攻击/01-无线热点攻击/02-实践/03-WEP攻击.md
+        - WPA破解: 014-无线攻击/01-无线热点攻击/02-实践/04-WPA破解.md
+        - WPS破解: 014-无线攻击/01-无线热点攻击/02-实践/05-WPS破解.md
+        - 其它补充: 014-无线攻击/01-无线热点攻击/02-实践/06-补充.md
+  - 拒绝服务:
+    - 简介: 015-拒绝服务/01-简介.md
+    - 攻击类型及原理和工具: 015-拒绝服务/02-攻击类型及原理和工具.md
+    - 拒绝服务攻击其它工具: 015-拒绝服务/03-拒绝服务攻击其它工具.md
+  - 取证:
+    - 计算机取证:
+      - 关于计算机取证: 016-取证/01-计算机取证/01-关于计算机取证.md
+      - 活取证: 016-取证/01-计算机取证/02-活取证.md
+      - 死取证: 016-取证/01-计算机取证/03-死取证.md
+    - 日志及流量取证:
+      - 日志流量取证介绍: 016-取证/02-日志及流量取证/01-流量取证介绍.md
+      - 日志流量取证实践: 016-取证/02-日志及流量取证/02-流量取证实践.md
+  - 报告:
+    - 渗透测试报告: 017-报告/01-渗透测试报告.md
+  - 练习:
+    - CTF:
+      - 学习方向及资源引导: 018-练习/01-CTF/01-CTF学习指导.md
+      - 流量取证专项: 018-练习/01-CTF/02-流量取证专项.md
+    - 靶场:
+      - Basic_Pentesting_2: 018-练习/02-靶场/05-Basic_Pentesting_2.md
+      - 内网渗透学习: 018-练习/02-靶场/06-内网渗透学习.md
+  - About:
+    - 关于我: 019-关于我/关于我.md
+
+
+# Theme
+theme:
+  name: 'material'
+  language: 'zh'
+  palette:
+    primary: 'white'
+    accent: 'red'
+  icon:
+    logo: material/shield-lock
+  features:
+    - navigation.tabs
+    - navigation.top
+    - search.highlight
+    - search.suggest
+  font:
+    text: 'Fira Sans'
+    code: 'Fira Mono'
+
+# Customization
+extra:
+  search:
+    language: 'zh'
+
+extra_javascript:
+  - '_static/js/extra.js'
+  - 'https://cdn.bootcss.com/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML'
+
+extra_css:
+  - '_static/css/extra.css'
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - def_list
+  - footnotes
+  - meta
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
