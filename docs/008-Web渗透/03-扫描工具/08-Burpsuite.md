@@ -2,7 +2,7 @@
 
 > Web安全工具中的瑞士军刀，PortSwigger公司开发的统一集成工具，可发现全部现代WEB安全漏洞。所有工具共享一个能处理并显示HTTP消息的可扩展框架，模块之间无缝交换信息。
 >
-> 官网: [http://www.portswigger.net](http://www.portswigger.net)
+> 官网: [https://portswigger.net](https://portswigger.net)
 
 ## 0x01 版本与启动
 
@@ -144,7 +144,7 @@ Host: example.org
 
 - **BApp Store**: 在线插件商店
 - 支持 Jython 扩展（需要 jython-standalone jar）
-    - 下载: [http://www.jython.org/downloads.html](http://www.jython.org/downloads.html)
+    - 下载: [https://www.jython.org/download](https://www.jython.org/download)
 - 在 Options 中配置 Jython 路径
 
 ## 0x0A 其他代理截断工具

