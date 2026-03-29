@@ -30,9 +30,41 @@ mindmap
       IPS
 ```
 
-## 0x01 Web渗透介绍
+## 0x01 Web 安全概述
 
 > 即利用Web的漏洞进行攻击, Web正在迅速发展, 所以以Web作为渗透的切入口, 也越来越流行
+
+### OWASP Top 10（2021 版）
+
+> [OWASP Top 10](https://owasp.org/www-project-top-ten/) 是 Web 应用安全领域最权威的风险分类：
+
+| 排名 | 风险类型 | 说明 |
+|------|----------|------|
+| A01 | 失效的访问控制 | 权限绕过、IDOR、越权访问 |
+| A02 | 加密机制失效 | 敏感数据明文传输/存储、弱加密 |
+| A03 | 注入 | SQL注入、命令注入、LDAP注入等 |
+| A04 | 不安全设计 | 架构层面的安全缺陷 |
+| A05 | 安全配置错误 | 默认配置、目录列表、错误信息泄露 |
+| A06 | 自带缺陷和过时的组件 | 使用已知漏洞的第三方库/框架 |
+| A07 | 身份识别和认证失效 | 弱密码、会话管理缺陷、暴力破解 |
+| A08 | 软件和数据完整性故障 | 不安全的反序列化、CI/CD完整性 |
+| A09 | 安全日志和监控失效 | 缺乏日志记录和告警 |
+| A10 | 服务端请求伪造(SSRF) | 服务端发起非预期的请求 |
+
+### HTTP 协议
+
+- **HTTP/1.1**：最广泛使用的版本
+- **HTTP/2**：二进制协议、多路复用、头部压缩
+- **HTTP/3**：基于 QUIC（UDP），更快的连接建立
+
+### 重要的安全响应头
+
+```
+Content-Security-Policy (CSP)           — 防止 XSS
+X-Content-Type-Options: nosniff         — 防止 MIME 嗅探
+X-Frame-Options: DENY/SAMEORIGIN        — 防止点击劫持
+Strict-Transport-Security (HSTS)        — 强制 HTTPS
+```
 
 ## 0x02 Web安全词条
 > 参考来源：乌云知识库（已关闭）
@@ -161,3 +193,11 @@ mindmap
 | **ffuf** | 模糊测试 | 高性能 Web 模糊测试工具，支持目录爆破、参数爆破、虚拟主机发现 |
 | **sqlmap** | SQL 注入 | 自动化 SQL 注入检测与利用工具 |
 | **XSStrike** | XSS 检测 | 专注于跨站脚本漏洞的检测与利用工具 |
+| **Katana** | 爬虫 | ProjectDiscovery 出品的下一代 Web 爬虫 |
+
+## 0x04 学习资源
+
+- [PortSwigger Web Security Academy](https://portswigger.net/web-security) — 最佳 Web 安全免费课程
+- [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) — Web 安全测试标准
+- [HackTricks](https://book.hacktricks.xyz/) — 渗透测试技巧大全
+- [PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings) — 各类漏洞的 Payload 集合
