@@ -2,6 +2,8 @@
 
 Kali Linux 渗透测试学习笔记，基于安全牛苑房弘老师的 [Kali Linux 渗透测试课程](https://edu.aqniu.com/course/83) 整理。
 
+> **📌 关于本笔记**：最初于 **2018 年**编写，2026 年借助 AI 进行了现代化升级——更新过时命令和工具、标注已废弃内容、补充现代安全实践。部分原始内容可能仍基于 Kali 2018 版本环境，请以实际版本为准。
+
 ## 在线阅读
 
 **[https://keybird0.github.io/Kali-learning-notes/](https://keybird0.github.io/Kali-learning-notes/)**
