@@ -1,0 +1,6672 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Kali Linux 渗透测试学习笔记">
+      
+      
+        <meta name="author" content="KeyBird">
+      
+      
+        <link rel="canonical" href="https://keybird0.github.io/Kali-learning-notes/004-%E8%A2%AB%E5%8A%A8%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/02-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E4%B9%8BDNS/">
+      
+      
+        <link rel="prev" href="../01-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E5%86%85%E5%AE%B9%E5%92%8C%E7%94%A8%E9%80%94/">
+      
+      
+        <link rel="next" href="../03-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E4%B9%8BWhois/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>信息收集之DNS - KeyBird-Security-Learning-Notes</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans:300,300i,400,400i,700,700i%7CFira+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Fira Sans";--md-code-font:"Fira Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../_static/css/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="red">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#dns" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="KeyBird-Security-Learning-Notes" class="md-header__button md-logo" aria-label="KeyBird-Security-Learning-Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5zm0 6c1.4 0 2.8 1.1 2.8 2.5V11c.6 0 1.2.6 1.2 1.3v3.5c0 .6-.6 1.2-1.3 1.2H9.2c-.6 0-1.2-.6-1.2-1.3v-3.5c0-.6.6-1.2 1.2-1.2V9.5C9.2 8.1 10.6 7 12 7m0 1.2c-.8 0-1.5.5-1.5 1.3V11h3V9.5c0-.8-.7-1.3-1.5-1.3"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            KeyBird-Security-Learning-Notes
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              信息收集之DNS
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Keybird0/Kali-learning-notes" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Keybird0/Kali-learning-notes
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../.." class="md-tabs__link">
+          
+  
+  
+  前言
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../001-Pentest%E4%BB%8B%E7%BB%8D%E5%8F%8AKali%E5%AE%89%E8%A3%85/01-%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%8F%8AKali%E7%AE%80%E4%BB%8B/" class="md-tabs__link">
+          
+  
+  
+  系统安装及环境部署
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../003-%E5%9F%BA%E6%9C%AC%E5%B7%A5%E5%85%B7/01-NC%E4%B8%8ENETCAT/" class="md-tabs__link">
+          
+  
+  
+  基本工具的使用
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../01-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E5%86%85%E5%AE%B9%E5%92%8C%E7%94%A8%E9%80%94/" class="md-tabs__link">
+          
+  
+  
+  信息收集
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../006-%E5%BC%B1%E7%82%B9%E6%89%AB%E6%8F%8F/01-%E7%AE%80%E4%BB%8B%E5%8F%8A%E6%A6%82%E5%BF%B5/" class="md-tabs__link">
+          
+  
+  
+  弱点扫描
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../007-%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA/01-%E7%AE%80%E4%BB%8B/" class="md-tabs__link">
+          
+  
+  
+  缓冲区溢出
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../008-Web%E6%B8%97%E9%80%8F/01-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/01-web%E6%B8%97%E9%80%8F%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="md-tabs__link">
+          
+  
+  
+  Web渗透
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../009-%E5%AF%86%E7%A0%81%E7%A0%B4%E8%A7%A3/01-%E8%AE%A4%E8%AF%81%E7%AE%80%E4%BB%8B/" class="md-tabs__link">
+          
+  
+  
+  密码破解
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../010-%E6%B5%81%E9%87%8F%E6%93%8D%E4%BD%9C%E4%B8%8E%E9%9A%A7%E9%81%93/01-%E6%B5%81%E9%87%8F%E6%93%8D%E4%BD%9C%E7%AE%80%E4%BB%8B/" class="md-tabs__link">
+          
+  
+  
+  流量操作与隧道
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../011-%E5%85%8D%E6%9D%80/01-%E6%9D%80%E6%AF%92%E5%8F%8A%E5%85%8D%E6%9D%80%E5%8E%9F%E7%90%86/" class="md-tabs__link">
+          
+  
+  
+  免杀
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../012-%E6%8F%90%E6%9D%83/01-%E7%94%A8%E6%88%B7%E6%8F%90%E6%9D%83/" class="md-tabs__link">
+          
+  
+  
+  提权
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../013-Metasploit/01-Metasploit%E7%AE%80%E4%BB%8B/" class="md-tabs__link">
+          
+  
+  
+  Metasploit
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../014-%E6%97%A0%E7%BA%BF%E6%94%BB%E5%87%BB/01-%E6%97%A0%E7%BA%BF%E7%83%AD%E7%82%B9%E6%94%BB%E5%87%BB/01-%E7%90%86%E8%AE%BA/01-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="md-tabs__link">
+          
+  
+  
+  无线攻击
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../015-%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1/01-%E7%AE%80%E4%BB%8B/" class="md-tabs__link">
+          
+  
+  
+  拒绝服务
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../016-%E5%8F%96%E8%AF%81/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8F%96%E8%AF%81/01-%E5%85%B3%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8F%96%E8%AF%81/" class="md-tabs__link">
+          
+  
+  
+  取证
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../017-%E6%8A%A5%E5%91%8A/01-%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E6%8A%A5%E5%91%8A/" class="md-tabs__link">
+          
+  
+  
+  报告
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../018-%E7%BB%83%E4%B9%A0/01-CTF/01-CTF%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%AF%BC/" class="md-tabs__link">
+          
+  
+  
+  练习
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../019-%E5%85%B3%E4%BA%8E%E6%88%91/%E5%85%B3%E4%BA%8E%E6%88%91/" class="md-tabs__link">
+          
+  
+  
+  About
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="KeyBird-Security-Learning-Notes" class="md-nav__button md-logo" aria-label="KeyBird-Security-Learning-Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5zm0 6c1.4 0 2.8 1.1 2.8 2.5V11c.6 0 1.2.6 1.2 1.3v3.5c0 .6-.6 1.2-1.3 1.2H9.2c-.6 0-1.2-.6-1.2-1.3v-3.5c0-.6.6-1.2 1.2-1.2V9.5C9.2 8.1 10.6 7 12 7m0 1.2c-.8 0-1.5.5-1.5 1.3V11h3V9.5c0-.8-.7-1.3-1.5-1.3"/></svg>
+
+    </a>
+    KeyBird-Security-Learning-Notes
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Keybird0/Kali-learning-notes" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Keybird0/Kali-learning-notes
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    前言
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    前言
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    笔记介绍
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../000-%E5%89%8D%E8%A8%80/00-%E6%B3%95%E5%BE%8B%E6%B3%95%E8%A7%84/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    法律法规
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    系统安装及环境部署
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    系统安装及环境部署
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../001-Pentest%E4%BB%8B%E7%BB%8D%E5%8F%8AKali%E5%AE%89%E8%A3%85/01-%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%8F%8AKali%E7%AE%80%E4%BB%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    渗透测试及Kali简介
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    系统安装
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    系统安装
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../001-Pentest%E4%BB%8B%E7%BB%8D%E5%8F%8AKali%E5%AE%89%E8%A3%85/02-Kali%E5%AE%89%E8%A3%85/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kali安装
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../001-Pentest%E4%BB%8B%E7%BB%8D%E5%8F%8AKali%E5%AE%89%E8%A3%85/03-%E7%86%9F%E6%82%89Kali%E7%8E%AF%E5%A2%83/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    熟悉Kali环境
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../001-Pentest%E4%BB%8B%E7%BB%8D%E5%8F%8AKali%E5%AE%89%E8%A3%85/04-Kali%E7%8E%AF%E5%A2%83%E4%BC%98%E5%8C%96%E9%85%8D%E7%BD%AE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kali环境优化配置
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    环境部署
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    环境部署
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../002-%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83/01-%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83%E4%BB%8B%E7%BB%8D/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实验环境介绍
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../002-%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83/02-%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85%E9%9D%B6%E6%9C%BA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    虚拟机安装靶机
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../002-%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83/03-%E6%A8%A1%E6%8B%9F%E7%BD%91%E7%BB%9C%E6%8B%93%E6%89%91/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    模拟网络拓扑
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基本工具的使用
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    基本工具的使用
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../003-%E5%9F%BA%E6%9C%AC%E5%B7%A5%E5%85%B7/01-NC%E4%B8%8ENETCAT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NC与NETCAT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../003-%E5%9F%BA%E6%9C%AC%E5%B7%A5%E5%85%B7/02-WireShark%E4%B8%8ETcpDump/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WireShark与TcpDump
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../003-%E5%9F%BA%E6%9C%AC%E5%B7%A5%E5%85%B7/03-nmap%E4%B8%93%E9%A2%98/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    nmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../003-%E5%9F%BA%E6%9C%AC%E5%B7%A5%E5%85%B7/04-scapy%E4%B8%93%E9%A2%98/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    scapy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../003-%E5%9F%BA%E6%9C%AC%E5%B7%A5%E5%85%B7/05-iptables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    iptables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../003-%E5%9F%BA%E6%9C%AC%E5%B7%A5%E5%85%B7/06-%E5%85%B6%E5%AE%83%E5%9F%BA%E7%A1%80%E5%B7%A5%E5%85%B7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    其它
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    信息收集
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    信息收集
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    被动信息收集
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    被动信息收集
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E5%86%85%E5%AE%B9%E5%92%8C%E7%94%A8%E9%80%94/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    信息收集内容和用途
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    信息收集之DNS
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    信息收集之DNS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0x01" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0x01 相关概念
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0x02" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0x02 常用查询工具
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0x02 常用查询工具">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nslookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        nslookup:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dig
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0x03-dns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0x03 DNS区域传输
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0x03 DNS区域传输">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        相关概念
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        检测
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0x04-dns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0x04 其他dns信息收集方式
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0x04 其他dns信息收集方式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        爆破
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="爆破">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fierce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        使用fierce
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dnsenum" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        使用dnsenum
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dnsmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dnsmap
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        利用搜索引擎
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="利用搜索引擎">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#recon-ng" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        可以使用recon-ng,后面会再详细介绍
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E4%B9%8BWhois/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    信息收集之Whois
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E4%B9%8B%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    信息收集之搜索引擎
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E4%BD%BF%E7%94%A8%E6%90%9C%E7%B4%A2%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    使用搜索分析工具
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E6%AD%A3%E5%B8%B8%E4%BA%A4%E4%BA%92%E6%94%B6%E9%9B%86%E4%BF%A1%E6%81%AF/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    正常交互收集信息
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%85%B6%E5%AE%83%E9%80%94%E5%BE%84%E5%8F%8A%E5%88%A9%E7%94%A8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    其它途径及利用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    主动信息收集
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    主动信息收集
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../005-%E4%B8%BB%E5%8A%A8%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/01-%E4%B8%BB%E5%8A%A8%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E7%AE%80%E4%BB%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    主动信息收集简介
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../005-%E4%B8%BB%E5%8A%A8%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/02-%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    主机发现
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../005-%E4%B8%BB%E5%8A%A8%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/03-%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    端口扫描
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../005-%E4%B8%BB%E5%8A%A8%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/04-%E6%9C%8D%E5%8A%A1%E6%89%AB%E6%8F%8F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    服务扫描
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../005-%E4%B8%BB%E5%8A%A8%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/05-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E8%AF%86%E5%88%AB/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    操作系统识别
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../005-%E4%B8%BB%E5%8A%A8%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/06-snmp%E6%89%AB%E6%8F%8F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    snmp扫描
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../005-%E4%B8%BB%E5%8A%A8%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/07-SMB%E6%89%AB%E6%8F%8F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMB扫描
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../005-%E4%B8%BB%E5%8A%A8%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/08-SMTP%E6%89%AB%E6%8F%8F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMTP扫描
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../005-%E4%B8%BB%E5%8A%A8%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/09-%E9%98%B2%E6%8A%A4%E8%AF%86%E5%88%AB/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    防护识别
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    弱点扫描
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    弱点扫描
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../006-%E5%BC%B1%E7%82%B9%E6%89%AB%E6%8F%8F/01-%E7%AE%80%E4%BB%8B%E5%8F%8A%E6%A6%82%E5%BF%B5/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    简介及概念
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../006-%E5%BC%B1%E7%82%B9%E6%89%AB%E6%8F%8F/02-%E6%89%AB%E6%8F%8F%E5%8F%91%E7%8E%B0%E5%B7%A5%E5%85%B7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    扫描发现工具
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    缓冲区溢出
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    缓冲区溢出
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../007-%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA/01-%E7%AE%80%E4%BB%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    简介
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../007-%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA/02-Windows%E7%A8%8B%E5%BA%8F%E5%AE%9E%E4%BE%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Windows程序实例
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../007-%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA/03-Linux%E7%A8%8B%E5%BA%8F%E5%AE%9E%E4%BE%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linux程序实例
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Web渗透
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Web渗透
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基础知识
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    基础知识
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/01-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/01-web%E6%B8%97%E9%80%8F%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    web渗透简介及基础知识
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/01-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/02-%E4%B8%80%E4%BA%9B%E6%A6%82%E5%BF%B5/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    一些概念
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    侦查工具
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    侦查工具
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/02-%E4%BE%A6%E6%9F%A5%E5%B7%A5%E5%85%B7/01-Httrack/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Httrack
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    扫描工具
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    扫描工具
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/03-%E6%89%AB%E6%8F%8F%E5%B7%A5%E5%85%B7/01-Nikto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Nikto
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/03-%E6%89%AB%E6%8F%8F%E5%B7%A5%E5%85%B7/02-Vega/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vega
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/03-%E6%89%AB%E6%8F%8F%E5%B7%A5%E5%85%B7/03-Skipfish/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Skipfish
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/03-%E6%89%AB%E6%8F%8F%E5%B7%A5%E5%85%B7/04-w3af/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    w3af
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/03-%E6%89%AB%E6%8F%8F%E5%B7%A5%E5%85%B7/05-arachni/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    arachni
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/03-%E6%89%AB%E6%8F%8F%E5%B7%A5%E5%85%B7/06-owasp-Zap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    owasp-Zap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/03-%E6%89%AB%E6%8F%8F%E5%B7%A5%E5%85%B7/07-SQLMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQLMAP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/03-%E6%89%AB%E6%8F%8F%E5%B7%A5%E5%85%B7/08-Burpsuite/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Burpsuite
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/03-%E6%89%AB%E6%8F%8F%E5%B7%A5%E5%85%B7/09-Acunetix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Acunetix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/03-%E6%89%AB%E6%8F%8F%E5%B7%A5%E5%85%B7/10-AppScan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AppScan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_4" id="__nav_7_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    手动漏洞挖掘
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    手动漏洞挖掘
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/04-%E6%89%8B%E5%8A%A8%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/01-%E6%89%8B%E5%8A%A8%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E7%AE%80%E4%BB%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    手动漏洞挖掘简介
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/04-%E6%89%8B%E5%8A%A8%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/02-%E9%BB%98%E8%AE%A4%E9%85%8D%E7%BD%AE%E6%A3%80%E6%9F%A5/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    默认配置检查
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/04-%E6%89%8B%E5%8A%A8%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/03-%E7%99%BB%E5%BD%95%E6%8E%A2%E6%B5%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    登录探测
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/04-%E6%89%8B%E5%8A%A8%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/04-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%A3%80%E6%9F%A5/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    命令执行检查
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/04-%E6%89%8B%E5%8A%A8%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/05-%E5%86%85%E5%AE%B9%E6%B3%84%E9%9C%B2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    内容泄露
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/04-%E6%89%8B%E5%8A%A8%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/06-%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    文件上传
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/04-%E6%89%8B%E5%8A%A8%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/07-SQL%E6%B3%A8%E5%85%A5/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQL注入
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/04-%E6%89%8B%E5%8A%A8%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/08-XSS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XSS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/04-%E6%89%8B%E5%8A%A8%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/09-CSRF/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CSRF
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_5" id="__nav_7_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    其它
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    其它
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/05-%E5%85%B6%E5%AE%83/01-WebShell/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WebShell
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/05-%E5%85%B6%E5%AE%83/02-HTTPS%E6%94%BB%E5%87%BB/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTPS攻击
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../008-Web%E6%B8%97%E9%80%8F/05-%E5%85%B6%E5%AE%83/03-SSL%E4%B8%AD%E9%97%B4%E4%BA%BA%E6%94%BB%E5%87%BB%E5%8F%8Addos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SSL中间人攻击
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    密码破解
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    密码破解
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../009-%E5%AF%86%E7%A0%81%E7%A0%B4%E8%A7%A3/01-%E8%AE%A4%E8%AF%81%E7%AE%80%E4%BB%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    认证简介
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../009-%E5%AF%86%E7%A0%81%E7%A0%B4%E8%A7%A3/02-%E7%88%86%E7%A0%B4/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    爆破
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../009-%E5%AF%86%E7%A0%81%E7%A0%B4%E8%A7%A3/03-%E4%B8%AD%E9%97%B4%E4%BA%BA%E6%94%BB%E5%87%BB/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    中间人攻击
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../009-%E5%AF%86%E7%A0%81%E7%A0%B4%E8%A7%A3/04-%E5%AF%86%E6%96%87%E7%99%BB%E5%BD%95/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    密文登录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    流量操作与隧道
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    流量操作与隧道
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../010-%E6%B5%81%E9%87%8F%E6%93%8D%E4%BD%9C%E4%B8%8E%E9%9A%A7%E9%81%93/01-%E6%B5%81%E9%87%8F%E6%93%8D%E4%BD%9C%E7%AE%80%E4%BB%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    流量操作简介
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../010-%E6%B5%81%E9%87%8F%E6%93%8D%E4%BD%9C%E4%B8%8E%E9%9A%A7%E9%81%93/02-%E7%AE%80%E5%8D%95%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91%E5%92%8Cssh%E9%9A%A7%E9%81%93/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    简单端口转发和ssh隧道
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    免杀
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    免杀
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../011-%E5%85%8D%E6%9D%80/01-%E6%9D%80%E6%AF%92%E5%8F%8A%E5%85%8D%E6%9D%80%E5%8E%9F%E7%90%86/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    杀毒及免杀原理
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../011-%E5%85%8D%E6%9D%80/02-%E5%85%8D%E6%9D%80%E5%AE%9E%E8%B7%B5/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    免杀实践
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../011-%E5%85%8D%E6%9D%80/03-%E7%97%85%E6%AF%92%E6%8A%95%E6%94%BE%E6%89%A9%E5%85%85/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    病毒投放扩充
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    提权
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    提权
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../012-%E6%8F%90%E6%9D%83/01-%E7%94%A8%E6%88%B7%E6%8F%90%E6%9D%83/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    用户提权
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../012-%E6%8F%90%E6%9D%83/02-%E5%AF%86%E7%A0%81%E8%8E%B7%E5%8F%96/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    密码获取
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../012-%E6%8F%90%E6%9D%83/03-%E5%88%A9%E7%94%A8%E6%BC%8F%E6%B4%9E%E6%8F%90%E6%9D%83/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    利用漏洞提权
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../012-%E6%8F%90%E6%9D%83/04-%E5%88%A9%E7%94%A8%E4%B8%8D%E5%BD%93%E9%85%8D%E7%BD%AE%E6%8F%90%E6%9D%83/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    利用不当配置提权
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metasploit
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Metasploit
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../013-Metasploit/01-Metasploit%E7%AE%80%E4%BB%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metasploit简介
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../013-Metasploit/02-%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基本使用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../013-Metasploit/03-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    信息收集
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../013-Metasploit/04-%E5%BC%B1%E7%82%B9%E5%8F%91%E7%8E%B0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    弱点发现
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../013-Metasploit/05-%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%B8%97%E9%80%8F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    客户端渗透
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../013-Metasploit/06-%E5%90%8E%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%88%A9%E7%94%A8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    后渗透测试利用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../013-Metasploit/07-Armitage%E5%9B%BE%E5%BD%A2%E5%89%8D%E7%AB%AF/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Armitage图形前端
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../013-Metasploit/08-%E7%A4%BE%E4%BC%9A%E5%B7%A5%E7%A8%8B%E5%AD%A6/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    社会工程学
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    无线攻击
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    无线攻击
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_13_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_1" id="__nav_13_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    无线热点攻击
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    无线热点攻击
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_13_1_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_1_1" id="__nav_13_1_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    理论
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_13_1_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_1_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    理论
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../014-%E6%97%A0%E7%BA%BF%E6%94%BB%E5%87%BB/01-%E6%97%A0%E7%BA%BF%E7%83%AD%E7%82%B9%E6%94%BB%E5%87%BB/01-%E7%90%86%E8%AE%BA/01-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基础知识
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../014-%E6%97%A0%E7%BA%BF%E6%94%BB%E5%87%BB/01-%E6%97%A0%E7%BA%BF%E7%83%AD%E7%82%B9%E6%94%BB%E5%87%BB/01-%E7%90%86%E8%AE%BA/03-WEP%E6%94%BB%E5%87%BB%E5%9F%BA%E7%A1%80/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WEP攻击基础
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_13_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_1_2" id="__nav_13_1_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实践
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_13_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    实践
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../014-%E6%97%A0%E7%BA%BF%E6%94%BB%E5%87%BB/01-%E6%97%A0%E7%BA%BF%E7%83%AD%E7%82%B9%E6%94%BB%E5%87%BB/02-%E5%AE%9E%E8%B7%B5/01-Aircrack-ng%E5%9F%BA%E7%A1%80/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aircrack-ng基础
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../014-%E6%97%A0%E7%BA%BF%E6%94%BB%E5%87%BB/01-%E6%97%A0%E7%BA%BF%E7%83%AD%E7%82%B9%E6%94%BB%E5%87%BB/02-%E5%AE%9E%E8%B7%B5/02-MAC%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MAC绑定绕过
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../014-%E6%97%A0%E7%BA%BF%E6%94%BB%E5%87%BB/01-%E6%97%A0%E7%BA%BF%E7%83%AD%E7%82%B9%E6%94%BB%E5%87%BB/02-%E5%AE%9E%E8%B7%B5/03-WEP%E6%94%BB%E5%87%BB/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WEP攻击
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../014-%E6%97%A0%E7%BA%BF%E6%94%BB%E5%87%BB/01-%E6%97%A0%E7%BA%BF%E7%83%AD%E7%82%B9%E6%94%BB%E5%87%BB/02-%E5%AE%9E%E8%B7%B5/04-WPA%E7%A0%B4%E8%A7%A3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WPA破解
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../014-%E6%97%A0%E7%BA%BF%E6%94%BB%E5%87%BB/01-%E6%97%A0%E7%BA%BF%E7%83%AD%E7%82%B9%E6%94%BB%E5%87%BB/02-%E5%AE%9E%E8%B7%B5/05-WPS%E7%A0%B4%E8%A7%A3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WPS破解
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../014-%E6%97%A0%E7%BA%BF%E6%94%BB%E5%87%BB/01-%E6%97%A0%E7%BA%BF%E7%83%AD%E7%82%B9%E6%94%BB%E5%87%BB/02-%E5%AE%9E%E8%B7%B5/06-%E8%A1%A5%E5%85%85/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    其它补充
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_14" >
+        
+          
+          <label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    拒绝服务
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_14">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    拒绝服务
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../015-%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1/01-%E7%AE%80%E4%BB%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    简介
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../015-%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1/02-%E6%94%BB%E5%87%BB%E7%B1%BB%E5%9E%8B%E5%8F%8A%E5%8E%9F%E7%90%86%E5%92%8C%E5%B7%A5%E5%85%B7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    攻击类型及原理和工具
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../015-%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1/03-%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB%E5%85%B6%E5%AE%83%E5%B7%A5%E5%85%B7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    拒绝服务攻击其它工具
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_15" >
+        
+          
+          <label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    取证
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_15_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_15">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    取证
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_15_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_15_1" id="__nav_15_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    计算机取证
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_15_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_15_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    计算机取证
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../016-%E5%8F%96%E8%AF%81/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8F%96%E8%AF%81/01-%E5%85%B3%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8F%96%E8%AF%81/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    关于计算机取证
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../016-%E5%8F%96%E8%AF%81/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8F%96%E8%AF%81/02-%E6%B4%BB%E5%8F%96%E8%AF%81/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    活取证
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../016-%E5%8F%96%E8%AF%81/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8F%96%E8%AF%81/03-%E6%AD%BB%E5%8F%96%E8%AF%81/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    死取证
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_15_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_15_2" id="__nav_15_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    日志及流量取证
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_15_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_15_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    日志及流量取证
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../016-%E5%8F%96%E8%AF%81/02-%E6%97%A5%E5%BF%97%E5%8F%8A%E6%B5%81%E9%87%8F%E5%8F%96%E8%AF%81/01-%E6%B5%81%E9%87%8F%E5%8F%96%E8%AF%81%E4%BB%8B%E7%BB%8D/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    日志流量取证介绍
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../016-%E5%8F%96%E8%AF%81/02-%E6%97%A5%E5%BF%97%E5%8F%8A%E6%B5%81%E9%87%8F%E5%8F%96%E8%AF%81/02-%E6%B5%81%E9%87%8F%E5%8F%96%E8%AF%81%E5%AE%9E%E8%B7%B5/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    日志流量取证实践
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_16" >
+        
+          
+          <label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    报告
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_16_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_16">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    报告
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../017-%E6%8A%A5%E5%91%8A/01-%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E6%8A%A5%E5%91%8A/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    渗透测试报告
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_17" >
+        
+          
+          <label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    练习
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_17_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_17">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    练习
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_17_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_17_1" id="__nav_17_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CTF
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_17_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_17_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CTF
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../018-%E7%BB%83%E4%B9%A0/01-CTF/01-CTF%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%AF%BC/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    学习方向及资源引导
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../018-%E7%BB%83%E4%B9%A0/01-CTF/02-%E6%B5%81%E9%87%8F%E5%8F%96%E8%AF%81%E4%B8%93%E9%A1%B9/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    流量取证专项
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_17_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_17_2" id="__nav_17_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    靶场
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_17_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_17_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    靶场
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../018-%E7%BB%83%E4%B9%A0/02-%E9%9D%B6%E5%9C%BA/01-DVWA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DVWA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../018-%E7%BB%83%E4%B9%A0/02-%E9%9D%B6%E5%9C%BA/02-sqli_lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQLi-Labs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../018-%E7%BB%83%E4%B9%A0/02-%E9%9D%B6%E5%9C%BA/03-webug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WeBug
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../018-%E7%BB%83%E4%B9%A0/02-%E9%9D%B6%E5%9C%BA/04-Basic_Pentesting_1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Basic_Pentesting_1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../018-%E7%BB%83%E4%B9%A0/02-%E9%9D%B6%E5%9C%BA/05-Basic_Pentesting_2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Basic_Pentesting_2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../018-%E7%BB%83%E4%B9%A0/02-%E9%9D%B6%E5%9C%BA/06-%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    内网渗透学习
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_18" >
+        
+          
+          <label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_18_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_18">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    About
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../019-%E5%85%B3%E4%BA%8E%E6%88%91/%E5%85%B3%E4%BA%8E%E6%88%91/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    关于我
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0x01" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0x01 相关概念
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0x02" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0x02 常用查询工具
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0x02 常用查询工具">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nslookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        nslookup:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dig
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0x03-dns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0x03 DNS区域传输
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0x03 DNS区域传输">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        相关概念
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        检测
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0x04-dns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0x04 其他dns信息收集方式
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0x04 其他dns信息收集方式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        爆破
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="爆破">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fierce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        使用fierce
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dnsenum" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        使用dnsenum
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dnsmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dnsmap
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        利用搜索引擎
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="利用搜索引擎">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#recon-ng" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        可以使用recon-ng,后面会再详细介绍
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="dns">DNS信息收集<a class="headerlink" href="#dns" title="Permanent link">&para;</a></h1>
+<h2 id="0x01">0x01 相关概念<a class="headerlink" href="#0x01" title="Permanent link">&para;</a></h2>
+<p>DNS: 把域名解析成IP的一种协议</p>
+<blockquote>
+<p>对于一个网站最想了解的或许就是域名，比如sina.com这是一个域名(Domain Name)，<a href="http://www.sina.com则是完全限定域名(FQND:Fully">www.sina.com则是完全限定域名(FQND:Fully</a> Qualified Domain Name),FQND即是是该域名(sina.com)下的一个主机记录，主机记录也叫做A记录，当然也有可能是一个别名记录(C name)。每个域名都一个或者多个域名服务器，用来负责对该域名的解析，而域名服务器地址又是通过DNS里面的NS记录进行定义和注册的。此外每个域名或者也有自己的邮件服务器(MX记录)。而前面所有的解析记录都是将主机名解析成另外一个主机名或者IP地址，但是ptr则是一个反向解析记录的过程，即是将IP地址解析成主机名。</p>
+</blockquote>
+<p>DNS请求方法说明</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>地址记录,返回32位IPv4地址，最常用于将主机名映射到主机的IP地址，但也用于DNSBL，在RFC 1101中存 储子网掩码等</td>
+</tr>
+<tr>
+<td>CNAME</td>
+<td>规范名字。这种记录允许您将多个名字映射到同一台计算机</td>
+</tr>
+<tr>
+<td>AAAA</td>
+<td>IPv6地址记录,返回一个128位的IPv6地址，最常用于将主机名映射到主机的IP地址。</td>
+</tr>
+<tr>
+<td>SOA</td>
+<td>权限记录区域,指定关于DNS区域的权威信息，包括主要名称服务器，域管理员的电子邮件，域序列号以及与 刷新区域有关的多个定时器。</td>
+</tr>
+<tr>
+<td>MX</td>
+<td>邮件交换记录,将域名映射到该域的邮件传输代理列表。</td>
+</tr>
+<tr>
+<td>NS</td>
+<td>名称服务记录,委派一个DNS区域使用给定的权威名称服务器</td>
+</tr>
+<tr>
+<td>SPF</td>
+<td>一个简单的电子邮件验证系统，旨在通过提供一种机制来检测电子邮件欺骗，以允许接收邮件交换者检查来自域的传入邮件来自该域管理员授权的主机</td>
+</tr>
+<tr>
+<td>TXT</td>
+<td>文本记录,可自定任意文本</td>
+</tr>
+<tr>
+<td>PTR</td>
+<td>指针记录 ，指向规范名称的指针。 与CNAME不同，DNS处理停止，只返回名称。 最常见的用途是实施反向 DNS查询，但其他用途包括DNS-SD等。</td>
+</tr>
+<tr>
+<td>SRV</td>
+<td>服务定位器,通用服务位置记录，用于较新的协议，而不是创建协议特定的记录，如MX</td>
+</tr>
+<tr>
+<td>NSEC</td>
+<td>Next,NSSEC的一部分,用于证明名称不存在。 使用与(过时的)NXT记录相同的格式</td>
+</tr>
+<tr>
+<td>AXFR</td>
+<td>授权区域传输,将主区域名称服务器上的整个区域文件传输到辅助名称服务器. DNS区域传输通常用于跨多个DNS服务器复制DNS数据，或备份DNS文件. 用户或服务器将执行来自“名称服务器”的特定区域传输请求。如 果名称服务器允许区域传输发生，名称服务器托管的所有DNS名称和IP地址将以可读的ASCII文本形式返回</td>
+</tr>
+<tr>
+<td>IXFR</td>
+<td>增量区域传输,将整个区域文件从主名称服务器传输到辅助名称服务器</td>
+</tr>
+</tbody>
+</table>
+<p>DNS请求过程:</p>
+<blockquote>
+<p><img alt="" src="../../assets/004/20180123-059c3ffa.png" /><br />
+DNS 查询以各种不同的方式进行解析。有时，客户端也可使用从先前的查询获得的缓存信息就地应答查询。DNS 服务器可使用其自身的资源记录信息缓存来应答查询。DNS 服务器也可代表请求客户端查询或联系其他 DNS 服务器，以便完全解析该名称，并随后将应答返回至客户端。这个过程称为递归。另外，客户端自己也可尝试联系其他的 DNS 服务器来解析名称。当客户端这么做的时候，它会根据来自服务器的参考答案，使用其他的独立查询。该过程称作迭代。</p>
+<p>作者：onejustone
+链接：<a href="https://www.jianshu.com/p/cbb05318cea2">https://www.jianshu.com/p/cbb05318cea2</a></p>
+</blockquote>
+<p><strong>注意:</strong> 现在的互联网上大部分的网站都会采用智能DNS
+智能DNS的意思是：终端用户所处的网络不同,DNS查询结果是不一样的</p>
+<h2 id="0x02">0x02 常用查询工具<a class="headerlink" href="#0x02" title="Permanent link">&para;</a></h2>
+<h3 id="nslookup">nslookup:<a class="headerlink" href="#nslookup" title="Permanent link">&para;</a></h3>
+<p><img alt="" src="../../assets/004/20180123-e512abdb.png" /><br />
+<div class="highlight"><pre><span></span><code><span class="c1">#nslookup</span>
+&gt;<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="nv">type</span><span class="o">=</span>a
+
+&gt;<span class="w"> </span>sina.com
+Server:<span class="w">     </span><span class="m">10</span>.211.55.1<span class="o">(</span>本地缓存DNS服务器,就是所在地的运营商的服务器，如果不想使用本地服务商解析，可以更换任意的DNS服务器进行解析，比如:server<span class="w"> </span><span class="m">8</span>.8.8.8更换为谷歌的DNS服务器进行解析！<span class="o">)</span>
+Address:<span class="w">    </span><span class="m">10</span>.211.55.1#53
+
+Non-authoritative<span class="w"> </span>answer:
+Name:<span class="w">   </span>sina.com
+Address:<span class="w"> </span><span class="m">66</span>.102.251.33
+
+&gt;<span class="w"> </span>www.sina.com<span class="w"> </span>
+Server:<span class="w">     </span><span class="m">10</span>.211.55.1
+Address:<span class="w">    </span><span class="m">10</span>.211.55.1#53
+
+Non-authoritative<span class="w"> </span>answer:
+www.sina.com<span class="w">    </span>canonical<span class="w"> </span><span class="nv">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>us.sina.com.cn.
+us.sina.com.cn<span class="w">  </span>canonical<span class="w"> </span><span class="nv">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>spool.grid.sinaedge.com.
+Name:<span class="w">   </span>spool.grid.sinaedge.com
+Address:<span class="w"> </span><span class="m">116</span>.1.238.73
+
+也可以:
+nslookup<span class="w"> </span>-q<span class="o">=</span>any<span class="w"> </span>sina.com<span class="w"> </span><span class="o">(</span>-q<span class="w"> </span>是type的替换<span class="o">)</span>
+</code></pre></div></p>
+<p>可以看到www.sina.com并没有被直接解析为一个特定的IP地址，所以www.sina.com不是一个A记录，而是一个C name记录，转而被继续解析成us.sina.com.cn，一直解析知道主机记录。</p>
+<p><div class="highlight"><pre><span></span><code>&gt; set type=any
+&gt; sina.com
+
+返回:
+Address: 66.102.251.33
+sina.com    text = &quot;v=spf1 include:spf.sinamail.sina.com.cn -all&quot;
+sina.com
+    origin = ns1.sina.com.cn
+    mail addr = zhihao.staff.sina.com.cn
+    serial = 2005042601
+    refresh = 900
+    retry = 300
+    expire = 604800
+    minimum = 300
+sina.com    nameserver = ns2.sina.com.
+sina.com    nameserver = ns3.sina.com.
+sina.com    nameserver = ns1.sina.com.cn.
+sina.com    nameserver = ns2.sina.com.cn.
+sina.com    nameserver = ns1.sina.com.
+sina.com    nameserver = ns4.sina.com.cn.
+sina.com    nameserver = ns4.sina.com.
+sina.com    nameserver = ns3.sina.com.cn.
+sina.com    mail exchanger = 10 freemx2.sinamail.sina.com.cn.
+sina.com    mail exchanger = 10 freemx3.sinamail.sina.com.cn.
+sina.com    mail exchanger = 5 freemx1.sinamail.sina.com.cn.
+</code></pre></div>
+我们可以看到any查询出了sina.com域名的所有记录，ns记录，mail邮件交换记录。除此以为我们可以看到有一条特殊的记录即"text",SPF记录，其作用就是反垃圾邮件的，根据方向解析，获得垃圾邮件的来源地址，对服务器得到ip进行对比，若匹配则判断为正规邮件，不匹配则为垃圾邮件！</p>
+<h3 id="dig">dig<a class="headerlink" href="#dig" title="Permanent link">&para;</a></h3>
+<p>dig(Domain Information Groper),可以实现nslookup所有的功能,并且比其更强大更方便.
+<div class="highlight"><pre><span></span><code>root@test:~#<span class="w"> </span>dig<span class="w"> </span>sina.com
+
+<span class="p">;</span><span class="w"> </span>&lt;&lt;&gt;&gt;<span class="w"> </span>DiG<span class="w"> </span><span class="m">9</span>.11.2-P1-1-Debian<span class="w"> </span>&lt;&lt;&gt;&gt;<span class="w"> </span>sina.com
+<span class="p">;;</span><span class="w"> </span>global<span class="w"> </span>options:<span class="w"> </span>+cmd
+<span class="p">;;</span><span class="w"> </span>Got<span class="w"> </span>answer:
+<span class="p">;;</span><span class="w"> </span>-&gt;&gt;HEADER<span class="s">&lt;&lt;- opco</span>de:<span class="w"> </span>QUERY,<span class="w"> </span>status:<span class="w"> </span>NOERROR,<span class="w"> </span>id:<span class="w"> </span><span class="m">19425</span>
+<span class="p">;;</span><span class="w"> </span>flags:<span class="w"> </span>qr<span class="w"> </span>rd<span class="w"> </span>ra<span class="p">;</span><span class="w"> </span>QUERY:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span>ANSWER:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span>AUTHORITY:<span class="w"> </span><span class="m">8</span>,<span class="w"> </span>ADDITIONAL:<span class="w"> </span><span class="m">5</span>
+
+<span class="p">;;</span><span class="w"> </span>OPT<span class="w"> </span>PSEUDOSECTION:
+<span class="p">;</span><span class="w"> </span>EDNS:<span class="w"> </span>version:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>flags:<span class="p">;</span><span class="w"> </span>udp:<span class="w"> </span><span class="m">4096</span>
+<span class="p">;;</span><span class="w"> </span>QUESTION<span class="w"> </span>SECTION:
+<span class="p">;</span>sina.com.<span class="w">          </span>IN<span class="w">  </span>A
+
+<span class="p">;;</span><span class="w"> </span>ANSWER<span class="w"> </span>SECTION:
+sina.com.<span class="w">       </span><span class="m">125</span><span class="w"> </span>IN<span class="w">  </span>A<span class="w">   </span><span class="m">66</span>.102.251.33
+
+<span class="p">;;</span><span class="w"> </span>AUTHORITY<span class="w"> </span>SECTION:
+sina.com.<span class="w">       </span><span class="m">52119</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns4.sina.com.
+sina.com.<span class="w">       </span><span class="m">52119</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns4.sina.com.cn.
+sina.com.<span class="w">       </span><span class="m">52119</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns2.sina.com.cn.
+sina.com.<span class="w">       </span><span class="m">52119</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns3.sina.com.cn.
+sina.com.<span class="w">       </span><span class="m">52119</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns2.sina.com.
+sina.com.<span class="w">       </span><span class="m">52119</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns3.sina.com.
+sina.com.<span class="w">       </span><span class="m">52119</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns1.sina.com.
+sina.com.<span class="w">       </span><span class="m">52119</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns1.sina.com.cn.
+
+<span class="p">;;</span><span class="w"> </span>ADDITIONAL<span class="w"> </span>SECTION:
+ns1.sina.com.<span class="w">       </span><span class="m">51459</span><span class="w">   </span>IN<span class="w">  </span>A<span class="w">   </span><span class="m">114</span>.134.80.144
+ns2.sina.com.<span class="w">       </span><span class="m">51459</span><span class="w">   </span>IN<span class="w">  </span>A<span class="w">   </span><span class="m">114</span>.134.80.145
+ns3.sina.com.<span class="w">       </span><span class="m">51459</span><span class="w">   </span>IN<span class="w">  </span>A<span class="w">   </span><span class="m">61</span>.172.201.254
+ns4.sina.com.<span class="w">       </span><span class="m">51459</span><span class="w">   </span>IN<span class="w">  </span>A<span class="w">   </span><span class="m">123</span>.125.29.99
+
+<span class="p">;;</span><span class="w"> </span>Query<span class="w"> </span>time:<span class="w"> </span><span class="m">7</span><span class="w"> </span>msec
+<span class="p">;;</span><span class="w"> </span>SERVER:<span class="w"> </span><span class="m">10</span>.211.55.1#53<span class="o">(</span><span class="m">10</span>.211.55.1<span class="o">)</span>
+<span class="p">;;</span><span class="w"> </span>WHEN:<span class="w"> </span>Wed<span class="w"> </span>Jan<span class="w"> </span><span class="m">24</span><span class="w"> </span><span class="m">08</span>:26:38<span class="w"> </span>CST<span class="w"> </span><span class="m">2018</span>
+<span class="p">;;</span><span class="w"> </span>MSG<span class="w"> </span>SIZE<span class="w">  </span>rcvd:<span class="w"> </span><span class="m">272</span>
+</code></pre></div>
+输出的信息很详细.
+使用参数:
+<div class="highlight"><pre><span></span><code>查询163邮箱的邮件服务器A记录
+root@test:~#<span class="w"> </span>dig<span class="w">   </span>+noall<span class="w"> </span>+answer<span class="w"> </span>A<span class="w"> </span>mail.163.com
+mail.163.com.<span class="w">       </span><span class="m">81</span><span class="w">  </span>IN<span class="w">  </span>CNAME<span class="w">   </span>mail163.ntes53.netease.com.
+mail163.ntes53.netease.com.<span class="w"> </span><span class="m">108</span><span class="w"> </span>IN<span class="w">  </span>A<span class="w">   </span><span class="m">220</span>.181.12.207
+mail163.ntes53.netease.com.<span class="w"> </span><span class="m">108</span><span class="w"> </span>IN<span class="w">  </span>A<span class="w">   </span><span class="m">220</span>.181.12.208
+mail163.ntes53.netease.com.<span class="w"> </span><span class="m">108</span><span class="w"> </span>IN<span class="w">  </span>A<span class="w">   </span><span class="m">220</span>.181.12.209
+</code></pre></div>
+输出结果过滤显示:
+<div class="highlight"><pre><span></span><code>root@test:~#<span class="w"> </span>dig<span class="w">   </span>+noall<span class="w"> </span>+answer<span class="w"> </span>A<span class="w"> </span>mail.163.com<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $5}&#39;</span>
+mail163.ntes53.netease.com.
+<span class="m">220</span>.181.12.207
+<span class="m">220</span>.181.12.208
+<span class="m">220</span>.181.12.209
+</code></pre></div>
+反向域名解析(PTR记录),使用-x参数
+<div class="highlight"><pre><span></span><code>root@test:~#<span class="w"> </span>dig<span class="w"> </span>-x<span class="w"> </span><span class="m">220</span>.181.14.155<span class="w"> </span>+noall<span class="w"> </span>+answer
+
+<span class="p">;</span><span class="w"> </span>&lt;&lt;&gt;&gt;<span class="w"> </span>DiG<span class="w"> </span><span class="m">9</span>.11.2-P1-1-Debian<span class="w"> </span>&lt;&lt;&gt;&gt;<span class="w"> </span>-x<span class="w"> </span><span class="m">220</span>.181.14.155<span class="w"> </span>+noall<span class="w"> </span>+answer
+<span class="p">;;</span><span class="w"> </span>global<span class="w"> </span>options:<span class="w"> </span>+cmd
+<span class="m">155</span>.14.181.220.in-addr.arpa.<span class="w"> </span><span class="m">86400</span><span class="w"> </span>IN<span class="w">   </span>PTR<span class="w"> </span>m14-155.188.com.
+</code></pre></div>
+<strong>查询DNS bind的版本信息</strong>
+大部分的DNS服务器均采用BIND,查询bind的版本信息,有助于直接入侵DNS服务器,或许所有fqdn记录.但不是所有DNS服务器可以查询BIND信息,绝大多数dns服务器都设置了保护模式,无法通过此方式查询.
+<div class="highlight"><pre><span></span><code>root@test:~#<span class="w"> </span>dig<span class="w"> </span>+noall<span class="w"> </span>+answer<span class="w"> </span>sina.com<span class="w"> </span>ns
+返回:
+sina.com.<span class="w">       </span><span class="m">50204</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns3.sina.com.cn.
+sina.com.<span class="w">       </span><span class="m">50204</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns2.sina.com.
+sina.com.<span class="w">       </span><span class="m">50204</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns3.sina.com.
+sina.com.<span class="w">       </span><span class="m">50204</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns1.sina.com.
+sina.com.<span class="w">       </span><span class="m">50204</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns1.sina.com.cn.
+sina.com.<span class="w">       </span><span class="m">50204</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns4.sina.com.
+sina.com.<span class="w">       </span><span class="m">50204</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns4.sina.com.cn.
+sina.com.<span class="w">       </span><span class="m">50204</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns2.sina.com.cn.
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>root@test:~#<span class="w"> </span>dig<span class="w"> </span>+noall<span class="w"> </span>+answer<span class="w"> </span>txt<span class="w"> </span>chaos<span class="w"> </span>VERSION.BIND<span class="w"> </span>ns3.sina.com.cn.
+<span class="p">;;</span><span class="w"> </span>connection<span class="w"> </span>timed<span class="w"> </span>out<span class="p">;</span><span class="w"> </span>no<span class="w"> </span>servers<span class="w"> </span>could<span class="w"> </span>be<span class="w"> </span>reached
+<span class="p">;;</span><span class="w"> </span>connection<span class="w"> </span>timed<span class="w"> </span>out<span class="p">;</span><span class="w"> </span>no<span class="w"> </span>servers<span class="w"> </span>could<span class="w"> </span>be<span class="w"> </span>reached
+</code></pre></div>
+出不来也是很正常的,也有可能显示version为0也是无法查询.</p>
+<p>dns查询追踪,并且指定nameserver为谷歌的域名服务器
+<div class="highlight"><pre><span></span><code>root@test:~#<span class="w"> </span>dig<span class="w"> </span>+trace<span class="w"> </span>baidu.com
+返回:
+<span class="p">;;</span><span class="w"> </span>Warning:<span class="w"> </span>Message<span class="w"> </span>parser<span class="w"> </span>reports<span class="w"> </span>malformed<span class="w"> </span>message<span class="w"> </span>packet.
+
+<span class="p">;</span><span class="w"> </span>&lt;&lt;&gt;&gt;<span class="w"> </span>DiG<span class="w"> </span><span class="m">9</span>.11.2-P1-1-Debian<span class="w"> </span>&lt;&lt;&gt;&gt;<span class="w"> </span>+trace<span class="w"> </span>baidu.com
+<span class="p">;;</span><span class="w"> </span>global<span class="w"> </span>options:<span class="w"> </span>+cmd
+.<span class="w">           </span><span class="m">70160</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>k.root-servers.net.
+.<span class="w">           </span><span class="m">70160</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>c.root-servers.net.
+.<span class="w">           </span><span class="m">70160</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>a.root-servers.net.
+.<span class="w">           </span><span class="m">70160</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>h.root-servers.net.
+.<span class="w">           </span><span class="m">70160</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>e.root-servers.net.
+.<span class="w">           </span><span class="m">70160</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>f.root-servers.net.
+.<span class="w">           </span><span class="m">70160</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>l.root-servers.net.
+.<span class="w">           </span><span class="m">70160</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>d.root-servers.net.
+.<span class="w">           </span><span class="m">70160</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>j.root-servers.net.
+.<span class="w">           </span><span class="m">70160</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>i.root-servers.net.
+.<span class="w">           </span><span class="m">70160</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>b.root-servers.net.
+.<span class="w">           </span><span class="m">70160</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>g.root-servers.net.
+.<span class="w">           </span><span class="m">70160</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>m.root-servers.net.
+<span class="p">;;</span><span class="w"> </span>Received<span class="w"> </span><span class="m">512</span><span class="w"> </span>bytes<span class="w"> </span>from<span class="w"> </span><span class="m">10</span>.211.55.1#53<span class="o">(</span><span class="m">10</span>.211.55.1<span class="o">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">8</span><span class="w"> </span>ms
+
+baidu.com.<span class="w">      </span><span class="m">248</span><span class="w"> </span>IN<span class="w">  </span>A<span class="w">   </span><span class="m">123</span>.125.114.144
+baidu.com.<span class="w">      </span><span class="m">248</span><span class="w"> </span>IN<span class="w">  </span>A<span class="w">   </span><span class="m">111</span>.13.101.208
+baidu.com.<span class="w">      </span><span class="m">41540</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>dns.baidu.com.
+baidu.com.<span class="w">      </span><span class="m">41540</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns4.baidu.com.
+baidu.com.<span class="w">      </span><span class="m">41540</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns2.baidu.com.
+baidu.com.<span class="w">      </span><span class="m">41540</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns3.baidu.com.
+baidu.com.<span class="w">      </span><span class="m">41540</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns7.baidu.com.
+<span class="p">;;</span><span class="w"> </span>Received<span class="w"> </span><span class="m">240</span><span class="w"> </span>bytes<span class="w"> </span>from<span class="w"> </span><span class="m">199</span>.9.14.201#53<span class="o">(</span>b.root-servers.net<span class="o">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">7</span><span class="w"> </span>ms
+</code></pre></div>
+显示的结果为迭代查询的完整过程.</p>
+<p>使用不同dns服务器进行查询(查询结果可能会有所不同)
+<div class="highlight"><pre><span></span><code>root@test:~#<span class="w"> </span>dig<span class="w"> </span><span class="m">163</span>.com<span class="w"> </span>any<span class="w"> </span>
+返回:
+<span class="p">;;</span><span class="w"> </span>Connection<span class="w"> </span>to<span class="w"> </span><span class="m">10</span>.211.55.1#53<span class="o">(</span><span class="m">10</span>.211.55.1<span class="o">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="m">163</span>.com<span class="w"> </span>failed:<span class="w"> </span>connection<span class="w"> </span>refused.
+<span class="p">;;</span><span class="w"> </span>Connection<span class="w"> </span>to<span class="w"> </span>fe80::21c:42ff:fe00:18%2#53<span class="o">(</span>fe80::21c:42ff:fe00:18%2<span class="o">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="m">163</span>.com<span class="w"> </span>failed:<span class="w"> </span>connection<span class="w"> </span>refused.
+
+
+使用谷歌域名服务器查询
+root@test:~#<span class="w"> </span>dig<span class="w"> </span><span class="m">163</span>.com<span class="w"> </span>any<span class="w"> </span>@8.8.8.8
+返回:
+<span class="p">;</span><span class="w"> </span>&lt;&lt;&gt;&gt;<span class="w"> </span>DiG<span class="w"> </span><span class="m">9</span>.11.2-P1-1-Debian<span class="w"> </span>&lt;&lt;&gt;&gt;<span class="w"> </span><span class="m">163</span>.com<span class="w"> </span>any<span class="w"> </span>@8.8.8.8
+<span class="p">;;</span><span class="w"> </span>global<span class="w"> </span>options:<span class="w"> </span>+cmd
+<span class="p">;;</span><span class="w"> </span>Got<span class="w"> </span>answer:
+<span class="p">;;</span><span class="w"> </span>-&gt;&gt;HEADER<span class="s">&lt;&lt;- opco</span>de:<span class="w"> </span>QUERY,<span class="w"> </span>status:<span class="w"> </span>NOERROR,<span class="w"> </span>id:<span class="w"> </span><span class="m">43144</span>
+<span class="p">;;</span><span class="w"> </span>flags:<span class="w"> </span>qr<span class="w"> </span>rd<span class="w"> </span>ra<span class="p">;</span><span class="w"> </span>QUERY:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span>ANSWER:<span class="w"> </span><span class="m">15</span>,<span class="w"> </span>AUTHORITY:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>ADDITIONAL:<span class="w"> </span><span class="m">1</span>
+
+<span class="p">;;</span><span class="w"> </span>OPT<span class="w"> </span>PSEUDOSECTION:
+<span class="p">;</span><span class="w"> </span>EDNS:<span class="w"> </span>version:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>flags:<span class="p">;</span><span class="w"> </span>udp:<span class="w"> </span><span class="m">512</span>
+<span class="p">;;</span><span class="w"> </span>QUESTION<span class="w"> </span>SECTION:
+<span class="p">;</span><span class="m">163</span>.com.<span class="w">           </span>IN<span class="w">  </span>ANY
+
+<span class="p">;;</span><span class="w"> </span>ANSWER<span class="w"> </span>SECTION:
+<span class="m">163</span>.com.<span class="w">        </span><span class="m">21599</span><span class="w">   </span>IN<span class="w">  </span>SOA<span class="w"> </span>ns4.nease.net.<span class="w"> </span>admin.nease.net.<span class="w"> </span><span class="m">20161110</span><span class="w"> </span><span class="m">7200</span><span class="w"> </span><span class="m">1800</span><span class="w"> </span><span class="m">1209600</span><span class="w"> </span><span class="m">60</span>
+<span class="m">163</span>.com.<span class="w">        </span><span class="m">599</span><span class="w"> </span>IN<span class="w">  </span>A<span class="w">   </span><span class="m">123</span>.58.180.7
+<span class="m">163</span>.com.<span class="w">        </span><span class="m">599</span><span class="w"> </span>IN<span class="w">  </span>A<span class="w">   </span><span class="m">123</span>.58.180.8
+<span class="m">163</span>.com.<span class="w">        </span><span class="m">21599</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns6.nease.net.
+<span class="m">163</span>.com.<span class="w">        </span><span class="m">21599</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns1.nease.net.
+<span class="m">163</span>.com.<span class="w">        </span><span class="m">21599</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns4.nease.net.
+<span class="m">163</span>.com.<span class="w">        </span><span class="m">21599</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns5.nease.net.
+<span class="m">163</span>.com.<span class="w">        </span><span class="m">21599</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns3.nease.net.
+<span class="m">163</span>.com.<span class="w">        </span><span class="m">21599</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns2.166.com.
+<span class="m">163</span>.com.<span class="w">        </span><span class="m">21599</span><span class="w">   </span>IN<span class="w">  </span>NS<span class="w">  </span>ns8.166.com.
+<span class="m">163</span>.com.<span class="w">        </span><span class="m">17999</span><span class="w">   </span>IN<span class="w">  </span>MX<span class="w">  </span><span class="m">10</span><span class="w"> </span>163mx01.mxmail.netease.com.
+<span class="m">163</span>.com.<span class="w">        </span><span class="m">17999</span><span class="w">   </span>IN<span class="w">  </span>MX<span class="w">  </span><span class="m">10</span><span class="w"> </span>163mx02.mxmail.netease.com.
+<span class="m">163</span>.com.<span class="w">        </span><span class="m">17999</span><span class="w">   </span>IN<span class="w">  </span>MX<span class="w">  </span><span class="m">10</span><span class="w"> </span>163mx03.mxmail.netease.com.
+<span class="m">163</span>.com.<span class="w">        </span><span class="m">17999</span><span class="w">   </span>IN<span class="w">  </span>MX<span class="w">  </span><span class="m">50</span><span class="w"> </span>163mx00.mxmail.netease.com.
+<span class="m">163</span>.com.<span class="w">        </span><span class="m">17999</span><span class="w">   </span>IN<span class="w">  </span>TXT<span class="w"> </span><span class="s2">&quot;v=spf1 include:spf.163.com -all&quot;</span>
+
+<span class="p">;;</span><span class="w"> </span>Query<span class="w"> </span>time:<span class="w"> </span><span class="m">183</span><span class="w"> </span>msec
+<span class="p">;;</span><span class="w"> </span>SERVER:<span class="w"> </span><span class="m">8</span>.8.8.8#53<span class="o">(</span><span class="m">8</span>.8.8.8<span class="o">)</span>
+<span class="p">;;</span><span class="w"> </span>WHEN:<span class="w"> </span>Sat<span class="w"> </span>Jan<span class="w"> </span><span class="m">27</span><span class="w"> </span><span class="m">11</span>:11:49<span class="w"> </span>CST<span class="w"> </span><span class="m">2018</span>
+<span class="p">;;</span><span class="w"> </span>MSG<span class="w"> </span>SIZE<span class="w">  </span>rcvd:<span class="w"> </span><span class="m">404</span>
+</code></pre></div></p>
+<h2 id="0x03-dns">0x03 DNS区域传输<a class="headerlink" href="#0x03-dns" title="Permanent link">&para;</a></h2>
+<h3 id="_1">相关概念<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>区域传送简单理解其实把一个域名服务器的所有信息同步到另一个域名服务器.一般只允许同一域的服务器进行同步,如果配置错误,就可能造成所有域名服务器可同步过去,导致泄露DNS服务器的所有信息.</p>
+</blockquote>
+<h3 id="_2">检测<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li>使用dig</li>
+</ul>
+<div class="highlight"><pre><span></span><code>root@test:~#<span class="w"> </span>dig<span class="w"> </span>@ns4.sina.com<span class="w"> </span>sina.com<span class="w"> </span>axfr
+
+<span class="p">;</span><span class="w"> </span>&lt;&lt;&gt;&gt;<span class="w"> </span>DiG<span class="w"> </span><span class="m">9</span>.11.2-P1-1-Debian<span class="w"> </span>&lt;&lt;&gt;&gt;<span class="w"> </span>@ns4.sina.com<span class="w"> </span>sina.com<span class="w"> </span>axfr
+<span class="p">;</span><span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="w"> </span>server<span class="w"> </span>found<span class="o">)</span>
+<span class="p">;;</span><span class="w"> </span>global<span class="w"> </span>options:<span class="w"> </span>+cmd
+<span class="p">;</span><span class="w"> </span>Transfer<span class="w"> </span>failed.
+</code></pre></div>
+<ul>
+<li>使用host</li>
+</ul>
+<p><div class="highlight"><pre><span></span><code>root@test:~#<span class="w"> </span>host<span class="w"> </span>-T<span class="w"> </span>-l<span class="w"> </span>sina.com<span class="w"> </span>ns4.sina.com
+Using<span class="w"> </span>domain<span class="w"> </span>server:
+Name:<span class="w"> </span>ns4.sina.com
+Address:<span class="w"> </span><span class="m">123</span>.125.29.99#53
+Aliases:<span class="w"> </span>
+
+Host<span class="w"> </span>sina.com<span class="w"> </span>not<span class="w"> </span>found:<span class="w"> </span><span class="m">5</span><span class="o">(</span>REFUSED<span class="o">)</span>
+<span class="p">;</span><span class="w"> </span>Transfer<span class="w"> </span>failed.
+</code></pre></div>
+host的其它用法可以<code>man host</code>或<code>info host</code></p>
+<h2 id="0x04-dns">0x04 其他dns信息收集方式<a class="headerlink" href="#0x04-dns" title="Permanent link">&para;</a></h2>
+<h3 id="_3">爆破<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<p>查找特定工具自有字典或相关文件
+<code>dpkg -L 工具名</code>
+如<code>dpkg -L fierce</code></p>
+<h4 id="fierce">使用fierce<a class="headerlink" href="#fierce" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>fierce<span class="w"> </span>-dnsserver<span class="w"> </span><span class="m">8</span>.8.8.8<span class="w"> </span>-dns<span class="w"> </span>sina.com<span class="w"> </span>-wordlist<span class="w"> </span>/usr/share/fierce/hosts.txt
+DNS<span class="w"> </span>Servers<span class="w"> </span><span class="k">for</span><span class="w"> </span>sina.com:
+<span class="w">    </span>ns1.sina.com.cn
+<span class="w">    </span>ns2.sina.com
+<span class="w">    </span>ns3.sina.com
+<span class="w">    </span>ns2.sina.com.cn
+<span class="w">    </span>ns4.sina.com
+<span class="w">    </span>ns4.sina.com.cn
+<span class="w">    </span>ns1.sina.com
+<span class="w">    </span>ns3.sina.com.cn
+
+Trying<span class="w"> </span>zone<span class="w"> </span>transfer<span class="w"> </span>first...
+
+Unsuccessful<span class="w"> </span><span class="k">in</span><span class="w"> </span>zone<span class="w"> </span>transfer<span class="w"> </span><span class="o">(</span>it<span class="w"> </span>was<span class="w"> </span>worth<span class="w"> </span>a<span class="w"> </span>shot<span class="o">)</span>
+Okay,<span class="w"> </span>trying<span class="w"> </span>the<span class="w"> </span>good<span class="w"> </span>old<span class="w"> </span>fashioned<span class="w"> </span>way...<span class="w"> </span>brute<span class="w"> </span>force
+
+Checking<span class="w"> </span><span class="k">for</span><span class="w"> </span>wildcard<span class="w"> </span>DNS...
+Nope.<span class="w"> </span>Good.
+Now<span class="w"> </span>performing<span class="w"> </span><span class="m">2280</span><span class="w"> </span>test<span class="o">(</span>s<span class="o">)</span>...
+</code></pre></div>
+<p>#### 使用dnsdict6(最新版没有集成,需要自己安装)
+下载地址:<a href="http://www.thc.org/releases/thc-ipv6-2.7.tar.gz">http://www.thc.org/releases/thc-ipv6-2.7.tar.gz</a></p>
+<div class="highlight"><pre><span></span><code>tar<span class="w"> </span>xf<span class="w"> </span>压缩包
+<span class="nb">cd</span><span class="w"> </span>解压目录
+安装依赖:
+apt-get<span class="w"> </span>install<span class="w"> </span>libpcap-dev<span class="w"> </span>libssl-dev
+编译安装:
+make<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>install
+</code></pre></div>
+<p>使用帮助
+<div class="highlight"><pre><span></span><code>root@test:~# dnsdict6 -h
+dnsdict6 v2.7 (c) 2014 by van Hauser / THC &lt;vh@thc.org&gt; www.thc.org
+
+Syntax: dnsdict6 [-d4] [-s|-m|-l|-x|-u] [-t THREADS] [-D] domain [dictionary-file]
+
+Enumerates a domain for DNS entries, it uses a dictionary file if supplied
+or a built-in list otherwise. This tool is based on dnsmap by gnucitizen.org.
+
+Options:
+ -4      do also dump IPv4 addresses
+ -t NO   specify the number of threads to use (default: 8, max: 32).
+ -D      dump the selected built-in wordlist, no scanning.
+ -d      display IPv6 information on NS and MX DNS domain information.
+ -e      ignore no NS for domain errors
+ -S      perform SRV service name guessing
+ -[smlxu] choose the dictionary size by -s(mall=100), -m(edium=1419) (DEFAULT)
+           -l(arge=2601), -x(treme=5886) or -u(ber=16724)
+
+举例:
+dnsdict6 -4 -d -t 16 -e -x sina.com
+</code></pre></div></p>
+<h4 id="dnsenum">使用dnsenum<a class="headerlink" href="#dnsenum" title="Permanent link">&para;</a></h4>
+<p>使用帮助</p>
+<div class="highlight"><pre><span></span><code>dnsenum -h
+dnsenum VERSION:1.2.4
+Usage: dnsenum [Options] &lt;domain&gt; 
+[Options]:
+Note: the brute force -f switch is obligatory.
+GENERAL OPTIONS:
+  --dnsserver   &lt;server&gt;
+            Use this DNS server for A, NS and MX queries.
+  --enum        Shortcut option equivalent to --threads 5 -s 15 -w.
+  -h, --help        Print this help message.
+  --noreverse       Skip the reverse lookup operations.
+  --nocolor     Disable ANSIColor output.
+  --private     Show and save private ips at the end of the file domain_ips.txt.
+  --subfile &lt;file&gt;  Write all valid subdomains to this file.
+  -t, --timeout &lt;value&gt; The tcp and udp timeout values in seconds (default: 10s).
+  --threads &lt;value&gt; The number of threads that will perform different queries.
+  -v, --verbose     Be verbose: show all the progress and all the error messages.
+GOOGLE SCRAPING OPTIONS:
+  -p, --pages &lt;value&gt;   The number of google search pages to process when scraping names, 
+            the default is 5 pages, the -s switch must be specified.
+  -s, --scrap &lt;value&gt;   The maximum number of subdomains that will be scraped from Google (default 15).
+BRUTE FORCE OPTIONS:
+  -f, --file &lt;file&gt; Read subdomains from this file to perform brute force.
+  -u, --update  &lt;a|g|r|z&gt;
+            Update the file specified with the -f switch with valid subdomains.
+    a (all)     Update using all results.
+    g       Update using only google scraping results.
+    r       Update using only reverse lookup results.
+    z       Update using only zonetransfer results.
+  -r, --recursion   Recursion on subdomains, brute force all discovred subdomains that have an NS record.
+WHOIS NETRANGE OPTIONS:
+  -d, --delay &lt;value&gt;   The maximum value of seconds to wait between whois queries, the value is defined randomly, default: 3s.
+  -w, --whois       Perform the whois queries on c class network ranges.
+             **Warning**: this can generate very large netranges and it will take lot of time to performe reverse lookups.
+REVERSE LOOKUP OPTIONS:
+  -e, --exclude &lt;regexp&gt;
+            Exclude PTR records that match the regexp expression from reverse lookup results, useful on invalid hostnames.
+OUTPUT OPTIONS:
+  -o --output &lt;file&gt;    Output in XML format. Can be imported in MagicTree (www.gremwell.com)
+</code></pre></div>
+<p>使用举例</p>
+<div class="highlight"><pre><span></span><code>dnsenum<span class="w"> </span>-f<span class="w"> </span>/usr/share/dnsenum/dns.txt<span class="w"> </span>-dnsserver<span class="w"> </span><span class="m">8</span>.8.8.8<span class="w"> </span>sina.com<span class="w"> </span>-o<span class="w"> </span>sina.xml
+</code></pre></div>
+<h4 id="dnsmap">dnsmap<a class="headerlink" href="#dnsmap" title="Permanent link">&para;</a></h4>
+<p>使用帮助</p>
+<p><div class="highlight"><pre><span></span><code>root@test:~# dnsmap
+dnsmap 0.30 - DNS Network Mapper by pagvac (gnucitizen.org)
+
+usage: dnsmap &lt;target-domain&gt; [options]
+options:
+-w &lt;wordlist-file&gt;
+-r &lt;regular-results-file&gt;
+-c &lt;csv-results-file&gt;
+-d &lt;delay-millisecs&gt;
+-i &lt;ips-to-ignore&gt; (useful if you&#39;re obtaining false positives)
+
+e.g.:
+dnsmap target-domain.foo
+dnsmap target-domain.foo -w yourwordlist.txt -r /tmp/domainbf_results.txt
+dnsmap target-fomain.foo -r /tmp/ -d 3000
+dnsmap target-fomain.foo -r ./domainbf_results.txt
+</code></pre></div>
+用例</p>
+<div class="highlight"><pre><span></span><code>dnsmap<span class="w">  </span>-w<span class="w"> </span>wordlist.txt<span class="w"> </span>sina.com
+</code></pre></div>
+<p>#### dnsrecon </p>
+<p>使用帮助</p>
+<p><div class="highlight"><pre><span></span><code>root@test:~# dnsrecon 
+Version: 0.8.11
+Usage: dnsrecon.py &lt;options&gt;
+
+Options:
+   -h, --help                   Show this help message and exit.
+   -d, --domain      &lt;domain&gt;   Target domain.
+   -r, --range       &lt;range&gt;    IP range for reverse lookup brute force in formats (first-last) or in (range/bitmask).
+   -n, --name_server &lt;name&gt;     Domain server to use. If none is given, the SOA of the target will be used.
+   -D, --dictionary  &lt;file&gt;     Dictionary file of subdomain and hostnames to use for brute force.
+   -f                           Filter out of brute force domain lookup, records that resolve to the wildcard defined
+                                IP address when saving records.
+   -t, --type        &lt;types&gt;    Type of enumeration to perform (comma separated):
+                                std       SOA, NS, A, AAAA, MX and SRV if AXRF on the NS servers fail.
+                                rvl       Reverse lookup of a given CIDR or IP range.
+                                brt       Brute force domains and hosts using a given dictionary.
+                                srv       SRV records.
+                                axfr      Test all NS servers for a zone transfer.
+                                goo       Perform Google search for subdomains and hosts.
+                                bing      Perform Google search for subdomains and hosts.
+                                snoop     Perform cache snooping against all NS servers for a given domain, testing
+                                          all with file containing the domains, file given with -D option.
+                                tld       Remove the TLD of given domain and test against all TLDs registered in IANA.
+                                zonewalk  Perform a DNSSEC zone walk using NSEC records.
+   -a                           Perform AXFR with standard enumeration.
+   -s                           Perform a reverse lookup of IPv4 ranges in the SPF record with standard enumeration.
+   -g                           Perform Google enumeration with standard enumeration.
+   -b                           Perform Bing enumeration with standard enumeration.
+   -w                           Perform deep whois record analysis and reverse lookup of IP ranges found through
+                                Whois when doing a standard enumeration.
+   -z                           Performs a DNSSEC zone walk with standard enumeration.
+   --threads         &lt;number&gt;   Number of threads to use in reverse lookups, forward lookups, brute force and SRV
+                                record enumeration.
+   --lifetime        &lt;number&gt;   Time to wait for a server to response to a query.
+   --db              &lt;file&gt;     SQLite 3 file to save found records.
+   --xml             &lt;file&gt;     XML file to save found records.
+   --iw                         Continue brute forcing a domain even if a wildcard records are discovered.
+   -c, --csv         &lt;file&gt;     Comma separated value file.
+   -j, --json        &lt;file&gt;     JSON file.
+   -v                           Show attempts in the brute force modes.
+</code></pre></div>
+用例</p>
+<div class="highlight"><pre><span></span><code>dnsrecon<span class="w"> </span>-d<span class="w"> </span>sina.com<span class="w"> </span>--lifetime<span class="w"> </span><span class="m">10</span><span class="w"> </span>-t<span class="w"> </span>brt<span class="w"> </span>-D<span class="w"> </span>usr/share/dnsrecon/namelist.txt<span class="w"> </span>-x<span class="w"> </span>sina.xml
+</code></pre></div>
+<h3 id="_4">利用搜索引擎<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<h4 id="recon-ng">可以使用recon-ng,后面会再详细介绍<a class="headerlink" href="#recon-ng" title="Permanent link">&para;</a></h4>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2017-2026 KeyBird
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.top", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../_static/js/extra.js"></script>
+      
+        <script src="https://cdn.bootcss.com/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+    
+  </body>
+</html>
